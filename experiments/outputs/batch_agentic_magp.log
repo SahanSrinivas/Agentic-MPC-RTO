@@ -1,0 +1,10 @@
+Phase 1.5 batch | model=qwen3:30b | extra args: --rto ma-gp
+>>> r1_slow_feed_drift
+==========================================================================
+PHASE 1.5 R1 (model-mismatch (slow drift)) -- model=qwen3:30b rto=ma-gp agentic=True
+  mechanism: feed-composition load drift: xD output bias ramps linearly over the window
+  final realized: xD=0.9557 xB=0.00481  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 1
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/R1
+==========================================================================
+>>> r2_efficiency_loss
