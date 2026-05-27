@@ -1,0 +1,67 @@
+{
+  "part_a_prbs": {
+    "metrics": {
+      "ISE_total": 0.05374892125497735,
+      "ISE_xD": 0.0522082323294887,
+      "ISE_xB": 0.0015406889254886468,
+      "IAE_total": 3.5346975508328664,
+      "control_effort_total_abs_du": 1.5919441665372318,
+      "control_effort_R": 1.19176347709808,
+      "control_effort_S": 0.387496089422918,
+      "max_constraint_violation": 0.0,
+      "ise_donothing_reference": 0.130164,
+      "ise_reduction_vs_donothing": 0.5870676895687184
+    },
+    "pass": true,
+    "checks": {
+      "ISE_reduction_ge_50pct": {
+        "pass": true,
+        "value": 0.05374892125497735,
+        "threshold": 0.065082
+      },
+      "zero_constraint_violations": {
+        "pass": true,
+        "value": 0.0,
+        "threshold": 0.0
+      }
+    }
+  },
+  "part_b_clean_steps": {
+    "pass": true,
+    "scenarios": [
+      {
+        "name": "xD_up",
+        "changed": "xD",
+        "step_mag": 0.020000000000000018,
+        "band": 0.0010000000000000009,
+        "settling_min": 8.0,
+        "max_constraint_violation": 0.0
+      },
+      {
+        "name": "xD_down",
+        "changed": "xD",
+        "step_mag": 0.020000000000000018,
+        "band": 0.0010000000000000009,
+        "settling_min": 4.0,
+        "max_constraint_violation": 0.0
+      },
+      {
+        "name": "xB_up",
+        "changed": "xB",
+        "step_mag": 0.002,
+        "band": 0.0006000000000000001,
+        "settling_min": 5.0,
+        "max_constraint_violation": 0.0
+      },
+      {
+        "name": "xB_down",
+        "changed": "xB",
+        "step_mag": 0.002,
+        "band": 0.0006000000000000001,
+        "settling_min": 5.0,
+        "max_constraint_violation": 0.0
+      }
+    ]
+  },
+  "overall_pass": true
+}

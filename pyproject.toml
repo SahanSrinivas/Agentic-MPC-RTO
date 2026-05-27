@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-mpc"
+version = "0.1.0"
+description = "Phase 1 vertical slice: classical MPC + LLM supervisory agent on the Wood-Berry distillation column."
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",      # signal.cont2discrete, linalg.solve_discrete_are, optimize.minimize (SLSQP)
+    "openai>=1.0",      # OpenAI-compatible client pointed at Ollama (qwen3:4b)
+    "pydantic>=2.0",    # tool-argument validation / repair
+    "matplotlib>=3.7",  # validation + experiment plots
+    "casadi>=3.6,<4.0", # Phase 1.5 RTO: economic NLP via CasADi + IPOPT (shared comparator solver path)
+    "scikit-learn>=1.3", # Phase 1.5 MA-GP comparator: GP surrogate (Matern 5/2 + WhiteKernel)
+]
+# NOTE: no cvxpy -- the MPC adapted from operating-region-aware-agentic-cstr-control
+# (phase_1/src/mixture_mpc.py) solves its QP with scipy SLSQP, so we match that. CasADi is
+# added in Phase 1.5 for the RTO economic optimization (and scales to Phase 2's nonlinear CSTR).
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+include = ["agentic_mpc*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
