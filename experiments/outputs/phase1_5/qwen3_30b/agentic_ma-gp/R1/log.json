@@ -167,7 +167,7 @@
   "agent_decisions": [
     {
       "t": 60.0,
-      "final": "The MPC is operating within acceptable parameters. The innovation means for both outputs are well below the threshold (|8.74e-5| for xD, 4.12e-6 for xB), and the recent ISE (1.39e-6) is only slightly above nominal (1e-6), not warranting intervention. The RTO setpoints (xD=0.9175, xB=0.0362) are not being achieved due to process constraints or optimization feasibility, but this is the RTO's responsibility\u2014not the MPC's. The MPC is correctly tracking its predictions (low innovation), and the actual process values (xD=0.9594, xB=0.0054) align with nominal operation (xD\u22480.96, xB\u22480.005). No action is required.\n\n**Final Answer:**  \nThe MPC is functioning correctly with no need for intervention. The process is operating within nominal parameters, and the RTO setpoint discrepancy is not the MPC's responsibility.  \n\n**Output:**  \nNo action required. MPC is operating within acceptable limits. Process values align with nominal targets (xD \u2248 0.96, xB \u2248 0.005). RTO setpoint infeasibility is not an MPC issue.",
+      "final": "The process is operating within acceptable limits with no need for intervention. \n\n**Key observations:**\n1. **Process State:**  \n   - Current xD = 0.9594 (vs. nominal 0.96) \u2192 **0.0006 deviation** (well within tolerance).  \n   - Current xB = 0.0054 (vs. nominal 0.005) \u2192 **0.0004 deviation** (negligible).  \n   - MPC innovation and ISE metrics are **well below thresholds** (innovation mean: ~8.7e-5; ISE: 1.39e-6 vs. threshold 1e-5).\n\n2. **RTO Status:**  \n   - RTO setpoints (xD=0.9175, xB=0.0362) are **infeasible** (RTO status: \"infeasible,\" \"rto_converged: false\"), but the **process is naturally operating near nominal** (not following the infeasible RTO setpoints).  \n   - The MPC is **effectively tracking the actual process state** (low innovation), not the unachievable RTO target.\n\n3. **Conclusion:**  \n   The system is stable, operating near nominal specifications, and MPC performance is optimal. **No action required**\u2014the RTO's infeasible setpoints are irrelevant since the process is self-stabilizing at acceptable values. \n\n**Final Decision:**  \n\u2705 **No intervention needed.** Process is within design limits.  \n\n*Note: RTO optimization should be re-evaluated separately, but this does not impact current operational stability.*",
       "iterations": 2,
       "actions": [
         {
@@ -414,6 +414,8 @@
             "commanded_at_min": 0.0,
             "minutes_since_command": 60.0,
             "rto_variant": "MA-GP",
+            "rto_converged": false,
+            "rto_solve_status": "infeasible",
             "rto_status_at_command": {
               "setpoints": {
                 "xD": 0.9175488885212701,
@@ -443,7 +445,7 @@
     },
     {
       "t": 120.0,
-      "final": "The MPC is experiencing significant model-plant mismatch (innovation magnitude for xD = **6.04e-4 > 5e-4 threshold**) and poor tracking (ISE = **1.78e-5 > 1e-5 threshold**), despite the RTO setpoints being economically optimized. The current process state (xD = 0.9588, xB = 0.0047) deviates from the RTO target (xD = 0.9512, xB = 0.0069), with xD being **higher than target** (0.9588 > 0.9512) and xB **lower than target** (0.0047 < 0.0069). \n\nThe RTO variant (MA-GP) and model-plant gap (0.0006) indicate the RTO is accurate, but the MPC cannot achieve the target due to process dynamics. To reduce tracking error, **adjust the MPC target for xD upward** to align with the current process behavior (0.9588), while keeping xB target consistent (as its ISE is low). \n\n**Action:**  \nUpdate MPC target to **{xD: 0.956, xB: 0.0069}** (slightly higher xD target to reduce error, xB unchanged). This adjustment reduces the xD tracking gap from **+0.0076** to **+0.0022**, directly addressing the root cause of high innovation/ISE. \n\n**Rationale:**  \n- Current xD (0.9588) is closer to nominal (0.96) than RTO target (0.9512).  \n- No economic shift detected (prices unchanged), so RTO re-run unnecessary.  \n- Target adjustment is minimal, avoids destabilizing the process.  \n\n**Final Decision:**  \n`update_mpc_target({xD: 0.956, xB: 0.0069})` to resolve tracking issues.",
+      "final": "The MPC is experiencing significant model-plant mismatch, as evidenced by:\n- **xD innovation magnitude (6.04e-4)** exceeding the 5e-4 threshold\n- **ISE_recent (1.78e-5)** exceeding the 1e-5 threshold\n- RTO previously ran with **infeasible solution** (rto_solve_status: \"infeasible\") using MA-GP variant\n\nThe current RTO setpoints (xD=0.9512, xB=0.0069) are not achievable given the plant behavior (actual xD=0.9588), causing the MPC to struggle. The model-plant gap (0.0006) is small, indicating the RTO should be re-run to generate feasible setpoints that align with current plant dynamics.\n\n**Action:** Trigger RTO re-optimization to resolve infeasibility and provide updated setpoints that the MPC can track.\n\n```json\n{\n  \"action\": \"trigger_rto_run\",\n  \"rationale\": \"MPC mismatch (xD innovation=6.04e-4 > 5e-4, ISE=1.78e-5 > 1e-5) and previous RTO infeasibility require re-optimization. Current setpoints (xD=0.9512) are unachievable (actual xD=0.9588), causing tracking failure. Re-running RTO with MA-GP variant will generate feasible setpoints aligned with plant behavior.\"\n}\n```",
       "iterations": 2,
       "actions": [
         {
@@ -690,6 +692,8 @@
             "commanded_at_min": 60.0,
             "minutes_since_command": 60.0,
             "rto_variant": "MA-GP",
+            "rto_converged": false,
+            "rto_solve_status": "infeasible",
             "rto_status_at_command": {
               "setpoints": {
                 "xD": 0.9511594786914026,
@@ -719,7 +723,7 @@
     },
     {
       "t": 180.0,
-      "final": "Supervisory assessment at t=180 min:\n\n**Process State**:  \n- Current xD = 0.9568 (slightly below nominal 0.96)  \n- Current xB = 0.00478 (slightly below nominal 0.005)  \n\n**MPC Health**:  \n- **xD innovation mean**: -0.00105 (magnitude **1.05\u00d710\u207b\u00b3**, **> 5\u00d710\u207b\u2074 threshold**)  \n- **ISE recent**: 4.48\u00d710\u207b\u2075 (**45\u00d7 higher** than nominal 1\u00d710\u207b\u2076)  \n- **Conclusion**: Sustained model-plant mismatch; MPC unable to track setpoints.  \n\n**RTO Status**:  \n- Last RTO run at t=120 min (60 min ago), setpoints: xD=0.9512, xB=0.0069  \n- **Realized xD** (0.9407) **< commanded xD** (0.9512), indicating MPC struggle  \n- **Model-plant gap**: 0.0006 (small, but mismatch persists)  \n- **RTO variant**: MA-GP (adaptive), but process not settled to new setpoints  \n\n**Economic Context**:  \n- Prices unchanged from nominal (p_D=29.35, c_S=0.13), **no economic shift** detected.  \n\n**Action**:  \nTrigger RTO re-optimization to adjust setpoints for improved tracking. The MPC\u2019s inability to follow the RTO target (due to model mismatch) requires RTO to recalculate setpoints using current process data.  \n\n**Rationale**:  \n\"Sustained model-plant mismatch detected (xD innovation mean 0.00105 > 5\u00d710\u207b\u2074 threshold, ISE 4.48\u00d710\u207b\u2075); re-run RTO to adjust setpoints for better MPC tracking.\"  \n\n**Decision**:  \n`trigger_rto_run` with the above rationale.  \n\n*(No direct MPC setpoint adjustment needed; RTO is the correct lever for mismatch correction.)*",
+      "final": "The MPC is experiencing significant model-plant mismatch (innovation mean for xD: **-0.00105**, far exceeding the nominal threshold of ~1e-5) and high ISE (**4.48e-5**, exceeding the 1e-5 threshold). The RTO setpoints (xD=0.9512, xB=0.0069) are not being achieved (realized xD=0.9407), and the RTO was previously **infeasible** at command time. The process is operating at xD=0.9568 (closer to nominal 0.96 than the RTO target), indicating the RTO target is overly aggressive for current dynamics.\n\n**Action**: Trigger RTO again to generate feasible setpoints that align with the current process behavior. The MA-GP variant is adaptive, and re-running RTO will adjust targets to account for the mismatch, improving MPC tracking.\n\n**Reason**: The RTO's prior infeasibility and the MPC's inability to track the target stem from a misaligned model. Re-running RTO will produce a new, achievable target without manual intervention (as the MPC's model cannot be re-identified). This addresses the root cause (RTO infeasibility) rather than forcing an unachievable target.\n\n**Final Decision**:  \n`trigger_rto_run()`  \n*(RTO will generate new setpoints based on current process data and model-plant gap.)*",
       "iterations": 2,
       "actions": [
         {
@@ -966,6 +970,8 @@
             "commanded_at_min": 120.0,
             "minutes_since_command": 60.0,
             "rto_variant": "MA-GP",
+            "rto_converged": false,
+            "rto_solve_status": "infeasible",
             "rto_status_at_command": {
               "setpoints": {
                 "xD": 0.9511594786914026,

@@ -191,7 +191,7 @@
   "agent_decisions": [
     {
       "t": 60.0,
-      "final": "The process is operating within nominal parameters. MPC innovation statistics (mean magnitude ~1.6e-5 for xD, ~4.1e-6 for xB) and ISE (3.0e-7) are well below the threshold for concern (5e-4 innovation, 1e-5 ISE). Measured xD (0.9659) and xB (0.0054) remain close to nominal targets (0.96, 0.005), with MPC tracking performance consistent with healthy operation. Economic context shows no price changes or model-plant gaps requiring adjustment. RTO status confirms settled operation with MA variant at target setpoints (xD=0.966, xB=0.005). No intervention is required.\n\n**Final Assessment**: Process is healthy, no action needed.",
+      "final": "The process is operating within nominal parameters. MPC health metrics show innovation means (-1.65e-5, 4.12e-6) and ISE (3.03e-7) well below the threshold for concern (5e-4 innovation, 1e-5 ISE). Measured xD (0.9659) and xB (0.0054) remain close to nominal targets (0.96, 0.005), with no sustained offset. Economic context shows stable prices and a minimal model-plant gap (4.91e-5), while RTO status confirms the MA variant successfully commanded targets (xD=0.966, xB=0.005) 60 minutes ago with no active constraints. The MPC is tracking effectively without degradation. No supervisory action is warranted.",
       "iterations": 2,
       "actions": [
         {
@@ -438,6 +438,8 @@
             "commanded_at_min": 0.0,
             "minutes_since_command": 60.0,
             "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
             "rto_status_at_command": {
               "setpoints": {
                 "xD": 0.966,
@@ -466,8 +468,8 @@
     },
     {
       "t": 120.0,
-      "final": "The process is operating within nominal parameters. MPC innovation statistics (mean magnitude ~1.6e-5 for xD, ~2e-5 for xB) are well below the 5e-4 threshold, and ISE (8.09e-7) is within the nominal range (1e-6). The measured xD (0.978) and xB (0.0094) align closely with the RTO-setpoint targets (xD=0.978, xB=0.0089), with minor deviations consistent with MPC tracking performance. The RTO variant (MA) has successfully adjusted setpoints for economic optimization (p_D=29.35), and the model-plant gap (-0.0013) is negligible. No supervisory action is required.",
-      "iterations": 2,
+      "final": "",
+      "iterations": 3,
       "actions": [
         {
           "iteration": 0,
@@ -653,7 +655,7 @@
           }
         },
         {
-          "iteration": 0,
+          "iteration": 1,
           "tool": "get_mpc_health",
           "status": "executed",
           "args": {},
@@ -674,74 +676,12 @@
             },
             "innovation_window_samples": 20
           }
-        },
-        {
-          "iteration": 0,
-          "tool": "get_economic_context",
-          "status": "executed",
-          "args": {},
-          "result": {
-            "prices": {
-              "F": 1.0,
-              "z_F": 0.5,
-              "p_D": 29.3513,
-              "p_pen": 2.0,
-              "p_B": 0.3,
-              "c_S": 0.1306,
-              "xB_max": 0.05,
-              "D_max": 0.5
-            },
-            "last_rto_objective": 14.107853476886493,
-            "model_plant_gap": -0.0013354453355276519,
-            "current_rto_setpoints": {
-              "xD": 0.9780742641467357,
-              "xB": 0.00892572630935024
-            }
-          }
-        },
-        {
-          "iteration": 0,
-          "tool": "get_rto_status",
-          "status": "executed",
-          "args": {},
-          "result": {
-            "rto_has_run": true,
-            "commanded_setpoints": {
-              "xD": 0.9780742641467357,
-              "xB": 0.00892572630935024
-            },
-            "commanded_at_min": 100.0,
-            "minutes_since_command": 20.0,
-            "rto_variant": "MA",
-            "rto_status_at_command": {
-              "setpoints": {
-                "xD": 0.9780742641467357,
-                "xB": 0.00892572630935024
-              },
-              "realized": {
-                "xD": 0.9780742641467339,
-                "xB": 0.008925726309349152
-              },
-              "inputs": {
-                "R": 1.952236967933322,
-                "S": 1.710558673301576
-              },
-              "objective": 14.107853476886493,
-              "converged": true,
-              "active_constraints": [],
-              "model_plant_gap": -0.0013354453355276519,
-              "type": "MA",
-              "iteration": 3
-            },
-            "settled_since_command": false,
-            "n_rto_commands": 3
-          }
         }
       ]
     },
     {
       "t": 180.0,
-      "final": "The process is operating within nominal MPC health parameters: innovation means (6.5e-6 for xD, -5.8e-6 for xB) and recent ISE (4.08e-7) are well below the critical thresholds (5e-4 and 1e-5, respectively). The measured xD (0.9839) and xB (0.00975) align with the RTO-setpoint targets (xD: 0.9839, xB: 0.00959), confirming the MPC is tracking the economically optimized setpoints. The RTO (MA variant) ran 60 minutes ago with a small model-plant gap (-0.0006) and no active constraints. No disturbances, economic shifts, or tracking issues are detected. The system is healthy and requires no supervisory intervention.\n\n**Final Summary**: Process and MPC are operating within nominal parameters. RTO setpoints are being tracked without deviation. No action required.",
+      "final": "The process is operating within nominal economic and control parameters. The MPC is tracking the RTO-setpoint targets with minimal innovation (xD: 6.5e-6, xB: -5.8e-6) and low ISE (4.1e-7), well below the 5e-4 innovation and 1e-5 ISE thresholds for concern. The measured xD (0.9839) and xB (0.00975) align with the RTO's economic target (xD: 0.9839, xB: 0.00958), reflecting optimal operation for current distillate price (p_D = 29.35) and bottoms cost (p_B = 0.3). The RTO ran at t=120 min with no active constraints, and the MPC is maintaining the target despite the 60-minute settling period. No action is required.\n\n**Final Assessment**: Process and MPC are healthy; RTO setpoints are economically optimal and being tracked correctly.",
       "iterations": 2,
       "actions": [
         {
@@ -988,6 +928,8 @@
             "commanded_at_min": 120.0,
             "minutes_since_command": 60.0,
             "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
             "rto_status_at_command": {
               "setpoints": {
                 "xD": 0.9839145316638164,
@@ -1016,7 +958,7 @@
     },
     {
       "t": 240.0,
-      "final": "The process is operating within nominal MPC health parameters: innovation means (-1.78e-5 for xD, 5.0e-6 for xB) and ISE (2.79e-7) are well below the threshold for concern (5e-4 innovation mean, 1e-5 ISE). The measured xD (0.9868) and xB (0.0102) closely track the RTO-set MPC targets (xD: 0.9865, xB: 0.01025), with no persistent offset. The RTO (MA variant) ran 60 minutes ago with a small model-plant gap (0.0019), and the process is still settling but shows no signs of degradation. Economic parameters remain stable (no price/cost shifts detected), and the MPC is effectively tracking the RTO's economic setpoints. No supervisory action is required.\n\n**Assessment**: Process and MPC healthy; RTO setpoints are being tracked within nominal bounds.",
+      "final": "The process is operating within nominal MPC tracking performance. The MPC innovation statistics (mean magnitude ~1.7e-5 for xD, ~5e-6 for xB) are well below the 5e-4 threshold for mismatch, and the recent ISE (2.79e-7) is below the nominal 1e-6 reference. The measured xD (0.9868) and xB (0.0102) closely follow the RTO-setpoint targets (xD: 0.9865, xB: 0.01025), with the MPC actively tracking the economic optimization. The RTO variant (MA) is handling the model-plant gap (0.0019), and no economic shift (prices remain consistent with RTO objective). The process is healthy with no need for intervention.\n\n**Final Assessment**: Process and MPC are operating within nominal performance; RTO setpoints are being tracked effectively. No action required.",
       "iterations": 2,
       "actions": [
         {
@@ -1263,6 +1205,8 @@
             "commanded_at_min": 180.0,
             "minutes_since_command": 60.0,
             "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
             "rto_status_at_command": {
               "setpoints": {
                 "xD": 0.9864971352349179,

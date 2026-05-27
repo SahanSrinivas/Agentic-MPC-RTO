@@ -1,4 +1,4 @@
-=== START Wed May 27 21:36:37 UTC 2026 ===
+=== START Wed May 27 22:15:06 UTC 2026 ===
 --- bash experiments/run_all_phase_1_5.sh qwen3:30b --rto ma ---
 Phase 1.5 batch | model=qwen3:30b | extra args: --rto ma
 >>> r1_slow_feed_drift
@@ -13,8 +13,8 @@ PHASE 1.5 R1 (model-mismatch (slow drift)) -- supervisor=llm rto=ma model=qwen3:
 ==========================================================================
 PHASE 1.5 R2 (model-mismatch (abrupt)) -- supervisor=llm rto=ma model=qwen3:30b seed=42
   mechanism: equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)
-  final realized: xD=0.9616 xB=0.00539  (setpoint xD=0.9625 xB=0.00465)
-  RTO commands: 7  | agent cycles: 4  | agent actions: 2
+  final realized: xD=0.9617 xB=0.00594  (setpoint xD=0.9639 xB=0.00550)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 0
   outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma/R2
 ==========================================================================
 >>> r3_feed_price_spike
@@ -34,34 +34,624 @@ PHASE 1.5 R4 (economic-shift (constraint-driven)) -- supervisor=llm rto=ma model
   outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma/R4
 ==========================================================================
 >>> r5_spec_tightening
-Traceback (most recent call last):
-  File "/workspace/Agentic-MPC-RTO/experiments/r5_spec_tightening.py", line 12, in <module>
-    main("R5")
-  File "/workspace/Agentic-MPC-RTO/experiments/_phase1_5_runner.py", line 195, in main
-    run_scenario(scenario_id, model=a.model, rto_variant=a.rto, agentic=not a.no_agent,
-  File "/workspace/Agentic-MPC-RTO/experiments/_phase1_5_runner.py", line 111, in run_scenario
-    result = loop.run(t_end, on_step=on_step)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/Agentic-MPC-RTO/agentic_mpc/rto/rto_mpc_loop.py", line 117, in run
-    self._trigger_rto()
-  File "/workspace/Agentic-MPC-RTO/agentic_mpc/rto/rto_mpc_loop.py", line 131, in _trigger_rto
-    res = self.optimizer.solve()
-          ^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/Agentic-MPC-RTO/agentic_mpc/rto/modifier_adaptation.py", line 195, in solve
-    self.iterate()
-  File "/workspace/Agentic-MPC-RTO/agentic_mpc/rto/modifier_adaptation.py", line 247, in iterate
-    sol = self._solve_modified(sp_k)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/Agentic-MPC-RTO/agentic_mpc/rto/modifier_adaptation.py", line 273, in _solve_modified
-    starts = [tuple(sp_k)] + [(float(self._rng.uniform(lo[0], hi[0])),
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/Agentic-MPC-RTO/agentic_mpc/rto/modifier_adaptation.py", line 274, in <listcomp>
-    float(self._rng.uniform(lo[1], hi[1])))
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "numpy/random/_generator.pyx", line 1094, in numpy.random._generator.Generator.uniform
-  File "numpy/random/_common.pyx", line 634, in numpy.random._common.cont
-  File "numpy/random/_common.pyx", line 432, in numpy.random._common.check_constraint
-ValueError: high - low < 0
+==========================================================================
+PHASE 1.5 R5 (constraint-change (infeasibility)) -- supervisor=llm rto=ma model=qwen3:30b seed=42
+  mechanism: xB_max tightened below the physical minimum -> RTO returns infeasible
+  final realized: xD=0.9663 xB=0.00795  (setpoint xD=0.9660 xB=0.00800)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma/R5
+==========================================================================
+>>> r6_analyzer_gross_error
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:32:47 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:33:44 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 22:34:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+==========================================================================
+PHASE 1.5 R6 (data / sensor (gross error)) -- supervisor=llm rto=ma model=qwen3:30b seed=42
+  mechanism: xD analyzer reads biased by `bias` over a window (sensor-only; true state unchanged)
+  final realized: xD=0.9658 xB=0.00794  (setpoint xD=0.9660 xB=0.00800)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma/R6
+==========================================================================
+>>> r7_load_disturbance
+==========================================================================
+PHASE 1.5 R7 (mpc-tracking degradation) -- supervisor=llm rto=ma model=qwen3:30b seed=42
+  mechanism: step xD output (load) disturbance -0.03 the MPC must reject; offset + ISE rise
+  final realized: xD=0.9606 xB=0.00530  (setpoint xD=0.9644 xB=0.00478)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma/R7
+==========================================================================
+Phase 1.5 batch complete -> experiments/outputs/phase1_5/qwen3_30b/
 --- bash experiments/run_all_phase_1_5.sh qwen3:30b --rto ma-gp ---
 Phase 1.5 batch | model=qwen3:30b | extra args: --rto ma-gp
 >>> r1_slow_feed_drift
+==========================================================================
+PHASE 1.5 R1 (model-mismatch (slow drift)) -- supervisor=llm rto=ma-gp model=qwen3:30b seed=42
+  mechanism: feed-composition load drift: xD output bias ramps linearly over the window
+  final realized: xD=0.9555 xB=0.00485  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 1
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma-gp/R1
+==========================================================================
+>>> r2_efficiency_loss
+==========================================================================
+PHASE 1.5 R2 (model-mismatch (abrupt)) -- supervisor=llm rto=ma-gp model=qwen3:30b seed=42
+  mechanism: equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)
+  final realized: xD=0.9572 xB=0.00488  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma-gp/R2
+==========================================================================
+>>> r3_feed_price_spike
+==========================================================================
+PHASE 1.5 R3 (economic-shift) -- supervisor=llm rto=ma-gp model=qwen3:30b seed=42
+  mechanism: steam (reboiler-energy) cost c_S multiplied by `factor` at the event
+  final realized: xD=0.9603 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma-gp/R3
+==========================================================================
+>>> r4_demand_shift
+==========================================================================
+PHASE 1.5 R4 (economic-shift (constraint-driven)) -- supervisor=llm rto=ma-gp model=qwen3:30b seed=42
+  mechanism: distillate-demand cap D <= D_max imposed at the event
+  final realized: xD=0.9603 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma-gp/R4
+==========================================================================
+>>> r5_spec_tightening
+==========================================================================
+PHASE 1.5 R5 (constraint-change (infeasibility)) -- supervisor=llm rto=ma-gp model=qwen3:30b seed=42
+  mechanism: xB_max tightened below the physical minimum -> RTO returns infeasible
+  final realized: xD=0.9600 xB=0.00504  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma-gp/R5
+==========================================================================
+>>> r6_analyzer_gross_error
+==========================================================================
+PHASE 1.5 R6 (data / sensor (gross error)) -- supervisor=llm rto=ma-gp model=qwen3:30b seed=42
+  mechanism: xD analyzer reads biased by `bias` over a window (sensor-only; true state unchanged)
+  final realized: xD=0.9598 xB=0.00494  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma-gp/R6
+==========================================================================
+>>> r7_load_disturbance
+==========================================================================
+PHASE 1.5 R7 (mpc-tracking degradation) -- supervisor=llm rto=ma-gp model=qwen3:30b seed=42
+  mechanism: step xD output (load) disturbance -0.03 the MPC must reject; offset + ISE rise
+  final realized: xD=0.9556 xB=0.00484  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 1
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/agentic_ma-gp/R7
+==========================================================================
+Phase 1.5 batch complete -> experiments/outputs/phase1_5/qwen3_30b/
+--- bash experiments/run_all_phase_1_5.sh qwen3:30b --no-agent --rto ma ---
+Phase 1.5 batch | model=qwen3:30b | extra args: --no-agent --rto ma
+>>> r1_slow_feed_drift
+==========================================================================
+PHASE 1.5 R1 (model-mismatch (slow drift)) -- supervisor=none rto=ma model=qwen3:30b seed=42
+  mechanism: feed-composition load drift: xD output bias ramps linearly over the window
+  final realized: xD=0.9611 xB=0.00597  (setpoint xD=0.9655 xB=0.00556)
+  RTO commands: 5  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma/R1
+==========================================================================
+>>> r2_efficiency_loss
+==========================================================================
+PHASE 1.5 R2 (model-mismatch (abrupt)) -- supervisor=none rto=ma model=qwen3:30b seed=42
+  mechanism: equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)
+  final realized: xD=0.9617 xB=0.00594  (setpoint xD=0.9639 xB=0.00550)
+  RTO commands: 5  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma/R2
+==========================================================================
+>>> r3_feed_price_spike
+==========================================================================
+PHASE 1.5 R3 (economic-shift) -- supervisor=none rto=ma model=qwen3:30b seed=42
+  mechanism: steam (reboiler-energy) cost c_S multiplied by `factor` at the event
+  final realized: xD=0.9207 xB=0.00228  (setpoint xD=0.9127 xB=0.00218)
+  RTO commands: 6  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma/R3
+==========================================================================
+>>> r4_demand_shift
+==========================================================================
+PHASE 1.5 R4 (economic-shift (constraint-driven)) -- supervisor=none rto=ma model=qwen3:30b seed=42
+  mechanism: distillate-demand cap D <= D_max imposed at the event
+  final realized: xD=0.9868 xB=0.01020  (setpoint xD=0.9877 xB=0.01071)
+  RTO commands: 6  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma/R4
+==========================================================================
+>>> r5_spec_tightening
+==========================================================================
+PHASE 1.5 R5 (constraint-change (infeasibility)) -- supervisor=none rto=ma model=qwen3:30b seed=42
+  mechanism: xB_max tightened below the physical minimum -> RTO returns infeasible
+  final realized: xD=0.9663 xB=0.00795  (setpoint xD=0.9660 xB=0.00800)
+  RTO commands: 6  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma/R5
+==========================================================================
+>>> r6_analyzer_gross_error
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:01:49 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+==========================================================================
+PHASE 1.5 R6 (data / sensor (gross error)) -- supervisor=none rto=ma model=qwen3:30b seed=42
+  mechanism: xD analyzer reads biased by `bias` over a window (sensor-only; true state unchanged)
+  final realized: xD=0.9658 xB=0.00794  (setpoint xD=0.9660 xB=0.00800)
+  RTO commands: 5  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma/R6
+==========================================================================
+>>> r7_load_disturbance
+==========================================================================
+PHASE 1.5 R7 (mpc-tracking degradation) -- supervisor=none rto=ma model=qwen3:30b seed=42
+  mechanism: step xD output (load) disturbance -0.03 the MPC must reject; offset + ISE rise
+  final realized: xD=0.9606 xB=0.00530  (setpoint xD=0.9644 xB=0.00478)
+  RTO commands: 5  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma/R7
+==========================================================================
+Phase 1.5 batch complete -> experiments/outputs/phase1_5/qwen3_30b/
+--- bash experiments/run_all_phase_1_5.sh qwen3:30b --no-agent --rto ma-gp ---
+Phase 1.5 batch | model=qwen3:30b | extra args: --no-agent --rto ma-gp
+>>> r1_slow_feed_drift
+==========================================================================
+PHASE 1.5 R1 (model-mismatch (slow drift)) -- supervisor=none rto=ma-gp model=qwen3:30b seed=42
+  mechanism: feed-composition load drift: xD output bias ramps linearly over the window
+  final realized: xD=0.9555 xB=0.00485  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma-gp/R1
+==========================================================================
+>>> r2_efficiency_loss
+==========================================================================
+PHASE 1.5 R2 (model-mismatch (abrupt)) -- supervisor=none rto=ma-gp model=qwen3:30b seed=42
+  mechanism: equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)
+  final realized: xD=0.9572 xB=0.00488  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 0  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/qwen3_30b/baseline_ma-gp/R2
+==========================================================================
+>>> r3_feed_price_spike
+Traceback (most recent call last):
+  File "/workspace/Agentic-MPC-RTO/experiments/r3_feed_price_spike.py", line 12, in <module>
+    main("R3")
+  File "/workspace/Agentic-MPC-RTO/experiments/_phase1_5_runner.py", line 195, in main
+    run_scenario(scenario_id, model=a.model, rto_variant=a.rto, agentic=not a.no_agent,
+  File "/workspace/Agentic-MPC-RTO/experiments/_phase1_5_runner.py", line 114, in run_scenario
+    _plot(result, scenario, out_dir, scenario_id)
+  File "/workspace/Agentic-MPC-RTO/experiments/_phase1_5_runner.py", line 156, in _plot
+    fig.tight_layout(); fig.savefig(out_dir / f"{scenario_id}.png", dpi=110); plt.close(fig)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/venv/lib/python3.11/site-packages/matplotlib/figure.py", line 3497, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/root/venv/lib/python3.11/site-packages/matplotlib/backend_bases.py", line 2186, in print_figure
+    result = print_method(
+             ^^^^^^^^^^^^^
+  File "/root/venv/lib/python3.11/site-packages/matplotlib/backend_bases.py", line 2042, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+                                                                 ^^^^^
+  File "/root/venv/lib/python3.11/site-packages/matplotlib/backends/backend_agg.py", line 481, in print_png
+    self._print_pil(filename_or_obj, "png", pil_kwargs, metadata)
+  File "/root/venv/lib/python3.11/site-packages/matplotlib/backends/backend_agg.py", line 430, in _print_pil
+    mpl.image.imsave(
+  File "/root/venv/lib/python3.11/site-packages/matplotlib/image.py", line 1657, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/root/venv/lib/python3.11/site-packages/PIL/Image.py", line 2726, in save
+    fp.close()
+OSError: [Errno 5] Input/output error
+--- bash experiments/run_all_phase_1_5.sh qwen3:30b --supervisor rule-based-naive --rto ma ---
+Phase 1.5 batch | model=qwen3:30b | extra args: --supervisor rule-based-naive --rto ma
+>>> r1_slow_feed_drift
+==========================================================================
+PHASE 1.5 R1 (model-mismatch (slow drift)) -- supervisor=rule-based-naive rto=ma model=qwen3:30b seed=42
+  mechanism: feed-composition load drift: xD output bias ramps linearly over the window
+  final realized: xD=0.9610 xB=0.00505  (setpoint xD=0.9647 xB=0.00438)
+  RTO commands: 8  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma/R1
+==========================================================================
+>>> r2_efficiency_loss
+==========================================================================
+PHASE 1.5 R2 (model-mismatch (abrupt)) -- supervisor=rule-based-naive rto=ma model=qwen3:30b seed=42
+  mechanism: equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)
+  final realized: xD=0.9607 xB=0.00502  (setpoint xD=0.9617 xB=0.00432)
+  RTO commands: 8  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma/R2
+==========================================================================
+>>> r3_feed_price_spike
+==========================================================================
+PHASE 1.5 R3 (economic-shift) -- supervisor=rule-based-naive rto=ma model=qwen3:30b seed=42
+  mechanism: steam (reboiler-energy) cost c_S multiplied by `factor` at the event
+  final realized: xD=0.9207 xB=0.00228  (setpoint xD=0.9127 xB=0.00218)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma/R3
+==========================================================================
+>>> r4_demand_shift
+==========================================================================
+PHASE 1.5 R4 (economic-shift (constraint-driven)) -- supervisor=rule-based-naive rto=ma model=qwen3:30b seed=42
+  mechanism: distillate-demand cap D <= D_max imposed at the event
+  final realized: xD=0.9868 xB=0.01020  (setpoint xD=0.9877 xB=0.01071)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma/R4
+==========================================================================
+>>> r5_spec_tightening
+==========================================================================
+PHASE 1.5 R5 (constraint-change (infeasibility)) -- supervisor=rule-based-naive rto=ma model=qwen3:30b seed=42
+  mechanism: xB_max tightened below the physical minimum -> RTO returns infeasible
+  final realized: xD=0.9663 xB=0.00795  (setpoint xD=0.9660 xB=0.00800)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma/R5
+==========================================================================
+>>> r6_analyzer_gross_error
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:41 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:11:42 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+==========================================================================
+PHASE 1.5 R6 (data / sensor (gross error)) -- supervisor=rule-based-naive rto=ma model=qwen3:30b seed=42
+  mechanism: xD analyzer reads biased by `bias` over a window (sensor-only; true state unchanged)
+  final realized: xD=0.9663 xB=0.00795  (setpoint xD=0.9660 xB=0.00800)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 1
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma/R6
+==========================================================================
+>>> r7_load_disturbance
+==========================================================================
+PHASE 1.5 R7 (mpc-tracking degradation) -- supervisor=rule-based-naive rto=ma model=qwen3:30b seed=42
+  mechanism: step xD output (load) disturbance -0.03 the MPC must reject; offset + ISE rise
+  final realized: xD=0.9597 xB=0.00420  (setpoint xD=0.9623 xB=0.00350)
+  RTO commands: 8  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma/R7
+==========================================================================
+Phase 1.5 batch complete -> experiments/outputs/phase1_5/qwen3_30b/
+--- bash experiments/run_all_phase_1_5.sh qwen3:30b --supervisor rule-based-naive --rto ma-gp ---
+Phase 1.5 batch | model=qwen3:30b | extra args: --supervisor rule-based-naive --rto ma-gp
+>>> r1_slow_feed_drift
+==========================================================================
+PHASE 1.5 R1 (model-mismatch (slow drift)) -- supervisor=rule-based-naive rto=ma-gp model=qwen3:30b seed=42
+  mechanism: feed-composition load drift: xD output bias ramps linearly over the window
+  final realized: xD=0.9558 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma-gp/R1
+==========================================================================
+>>> r2_efficiency_loss
+==========================================================================
+PHASE 1.5 R2 (model-mismatch (abrupt)) -- supervisor=rule-based-naive rto=ma-gp model=qwen3:30b seed=42
+  mechanism: equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)
+  final realized: xD=0.9576 xB=0.00498  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma-gp/R2
+==========================================================================
+>>> r3_feed_price_spike
+==========================================================================
+PHASE 1.5 R3 (economic-shift) -- supervisor=rule-based-naive rto=ma-gp model=qwen3:30b seed=42
+  mechanism: steam (reboiler-energy) cost c_S multiplied by `factor` at the event
+  final realized: xD=0.9603 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma-gp/R3
+==========================================================================
+>>> r4_demand_shift
+==========================================================================
+PHASE 1.5 R4 (economic-shift (constraint-driven)) -- supervisor=rule-based-naive rto=ma-gp model=qwen3:30b seed=42
+  mechanism: distillate-demand cap D <= D_max imposed at the event
+  final realized: xD=0.9603 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma-gp/R4
+==========================================================================
+>>> r5_spec_tightening
+==========================================================================
+PHASE 1.5 R5 (constraint-change (infeasibility)) -- supervisor=rule-based-naive rto=ma-gp model=qwen3:30b seed=42
+  mechanism: xB_max tightened below the physical minimum -> RTO returns infeasible
+  final realized: xD=0.9600 xB=0.00504  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma-gp/R5
+==========================================================================
+>>> r6_analyzer_gross_error
+==========================================================================
+PHASE 1.5 R6 (data / sensor (gross error)) -- supervisor=rule-based-naive rto=ma-gp model=qwen3:30b seed=42
+  mechanism: xD analyzer reads biased by `bias` over a window (sensor-only; true state unchanged)
+  final realized: xD=0.9603 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 1
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma-gp/R6
+==========================================================================
+>>> r7_load_disturbance
+==========================================================================
+PHASE 1.5 R7 (mpc-tracking degradation) -- supervisor=rule-based-naive rto=ma-gp model=qwen3:30b seed=42
+  mechanism: step xD output (load) disturbance -0.03 the MPC must reject; offset + ISE rise
+  final realized: xD=0.9560 xB=0.00494  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_naive_ma-gp/R7
+==========================================================================
+Phase 1.5 batch complete -> experiments/outputs/phase1_5/qwen3_30b/
+--- bash experiments/run_all_phase_1_5.sh qwen3:30b --supervisor rule-based-smart --rto ma ---
+Phase 1.5 batch | model=qwen3:30b | extra args: --supervisor rule-based-smart --rto ma
+>>> r1_slow_feed_drift
+==========================================================================
+PHASE 1.5 R1 (model-mismatch (slow drift)) -- supervisor=rule-based-smart rto=ma model=qwen3:30b seed=42
+  mechanism: feed-composition load drift: xD output bias ramps linearly over the window
+  final realized: xD=0.9610 xB=0.00505  (setpoint xD=0.9647 xB=0.00438)
+  RTO commands: 8  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma/R1
+==========================================================================
+>>> r2_efficiency_loss
+==========================================================================
+PHASE 1.5 R2 (model-mismatch (abrupt)) -- supervisor=rule-based-smart rto=ma model=qwen3:30b seed=42
+  mechanism: equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)
+  final realized: xD=0.9607 xB=0.00502  (setpoint xD=0.9617 xB=0.00432)
+  RTO commands: 8  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma/R2
+==========================================================================
+>>> r3_feed_price_spike
+==========================================================================
+PHASE 1.5 R3 (economic-shift) -- supervisor=rule-based-smart rto=ma model=qwen3:30b seed=42
+  mechanism: steam (reboiler-energy) cost c_S multiplied by `factor` at the event
+  final realized: xD=0.9207 xB=0.00228  (setpoint xD=0.9127 xB=0.00218)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma/R3
+==========================================================================
+>>> r4_demand_shift
+==========================================================================
+PHASE 1.5 R4 (economic-shift (constraint-driven)) -- supervisor=rule-based-smart rto=ma model=qwen3:30b seed=42
+  mechanism: distillate-demand cap D <= D_max imposed at the event
+  final realized: xD=0.9868 xB=0.01020  (setpoint xD=0.9877 xB=0.01071)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma/R4
+==========================================================================
+>>> r5_spec_tightening
+==========================================================================
+PHASE 1.5 R5 (constraint-change (infeasibility)) -- supervisor=rule-based-smart rto=ma model=qwen3:30b seed=42
+  mechanism: xB_max tightened below the physical minimum -> RTO returns infeasible
+  final realized: xD=0.9663 xB=0.00795  (setpoint xD=0.9660 xB=0.00800)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma/R5
+==========================================================================
+>>> r6_analyzer_gross_error
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+CasADi - 2026-05-27 23:12:20 WARNING("solver:nlp_grad_f failed: NaN detected for output grad_f_x, at (row 0, col 0).") [.../casadi/core/oracle_function.cpp:408]
+==========================================================================
+PHASE 1.5 R6 (data / sensor (gross error)) -- supervisor=rule-based-smart rto=ma model=qwen3:30b seed=42
+  mechanism: xD analyzer reads biased by `bias` over a window (sensor-only; true state unchanged)
+  final realized: xD=0.9663 xB=0.00795  (setpoint xD=0.9660 xB=0.00800)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 1
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma/R6
+==========================================================================
+>>> r7_load_disturbance
+==========================================================================
+PHASE 1.5 R7 (mpc-tracking degradation) -- supervisor=rule-based-smart rto=ma model=qwen3:30b seed=42
+  mechanism: step xD output (load) disturbance -0.03 the MPC must reject; offset + ISE rise
+  final realized: xD=0.9597 xB=0.00420  (setpoint xD=0.9623 xB=0.00350)
+  RTO commands: 8  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma/R7
+==========================================================================
+Phase 1.5 batch complete -> experiments/outputs/phase1_5/qwen3_30b/
+--- bash experiments/run_all_phase_1_5.sh qwen3:30b --supervisor rule-based-smart --rto ma-gp ---
+Phase 1.5 batch | model=qwen3:30b | extra args: --supervisor rule-based-smart --rto ma-gp
+>>> r1_slow_feed_drift
+==========================================================================
+PHASE 1.5 R1 (model-mismatch (slow drift)) -- supervisor=rule-based-smart rto=ma-gp model=qwen3:30b seed=42
+  mechanism: feed-composition load drift: xD output bias ramps linearly over the window
+  final realized: xD=0.9558 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma-gp/R1
+==========================================================================
+>>> r2_efficiency_loss
+==========================================================================
+PHASE 1.5 R2 (model-mismatch (abrupt)) -- supervisor=rule-based-smart rto=ma-gp model=qwen3:30b seed=42
+  mechanism: equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)
+  final realized: xD=0.9576 xB=0.00498  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma-gp/R2
+==========================================================================
+>>> r3_feed_price_spike
+==========================================================================
+PHASE 1.5 R3 (economic-shift) -- supervisor=rule-based-smart rto=ma-gp model=qwen3:30b seed=42
+  mechanism: steam (reboiler-energy) cost c_S multiplied by `factor` at the event
+  final realized: xD=0.9603 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma-gp/R3
+==========================================================================
+>>> r4_demand_shift
+==========================================================================
+PHASE 1.5 R4 (economic-shift (constraint-driven)) -- supervisor=rule-based-smart rto=ma-gp model=qwen3:30b seed=42
+  mechanism: distillate-demand cap D <= D_max imposed at the event
+  final realized: xD=0.9603 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma-gp/R4
+==========================================================================
+>>> r5_spec_tightening
+==========================================================================
+PHASE 1.5 R5 (constraint-change (infeasibility)) -- supervisor=rule-based-smart rto=ma-gp model=qwen3:30b seed=42
+  mechanism: xB_max tightened below the physical minimum -> RTO returns infeasible
+  final realized: xD=0.9600 xB=0.00504  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 6  | agent cycles: 4  | agent actions: 0
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma-gp/R5
+==========================================================================
+>>> r6_analyzer_gross_error
+==========================================================================
+PHASE 1.5 R6 (data / sensor (gross error)) -- supervisor=rule-based-smart rto=ma-gp model=qwen3:30b seed=42
+  mechanism: xD analyzer reads biased by `bias` over a window (sensor-only; true state unchanged)
+  final realized: xD=0.9603 xB=0.00495  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 1
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma-gp/R6
+==========================================================================
+>>> r7_load_disturbance
+==========================================================================
+PHASE 1.5 R7 (mpc-tracking degradation) -- supervisor=rule-based-smart rto=ma-gp model=qwen3:30b seed=42
+  mechanism: step xD output (load) disturbance -0.03 the MPC must reject; offset + ISE rise
+  final realized: xD=0.9560 xB=0.00494  (setpoint xD=0.9600 xB=0.00500)
+  RTO commands: 5  | agent cycles: 4  | agent actions: 3
+  outputs -> /workspace/Agentic-MPC-RTO/experiments/outputs/phase1_5/rule_based_smart_ma-gp/R7
+==========================================================================
+Phase 1.5 batch complete -> experiments/outputs/phase1_5/qwen3_30b/
+=== DONE Wed May 27 23:12:43 UTC 2026 ===

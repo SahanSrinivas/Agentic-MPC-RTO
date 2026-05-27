@@ -162,7 +162,7 @@
   "agent_decisions": [
     {
       "t": 60.0,
-      "final": "The system is operating within acceptable parameters. The MPC innovation means (|xD: 8.74e-5|, xB: 4.12e-6) are well within the nominal range (1e-5), confirming model accuracy. The ISE (1.385e-6) is slightly above nominal (1e-6) but remains low, indicating minimal tracking error. The measured xB (0.00542) is marginally above the target (0.005), but this small deviation is consistent with the MPC's low ISE and does not indicate a control issue. The RTO (MA variant) is functioning correctly, with negligible model-plant gap (4.91e-5) and realized setpoints matching commanded values. No constraints are active, and the system is stable.\n\n**Conclusion**: No action required. System is operating optimally within design tolerances.  \n\n**Final Answer**: The process is stable and within acceptable limits; no intervention needed.  \n**Answer**: \\boxed{No action required}",
+      "final": "The process is operating within nominal parameters. Measured xD (0.9654) and xB (0.0054) are within acceptable deviation from their nominal targets (0.96 and 0.005), with persistent offsets well below the 5e-4 innovation threshold. MPC health metrics show innovation means near zero (-8.7e-5 for xD, 4.1e-6 for xB) and ISE (1.39e-6) just slightly above nominal (1e-6), but still within acceptable bounds. Economic context remains nominal with no price shifts, and the RTO (MA variant) successfully commanded setpoints that align with realized process behavior. The plant has not yet fully settled after the RTO command (settled_since_command: false), but no corrective action is warranted as all metrics remain within healthy operating ranges.\n\n**No action required. Process is healthy and tracking well.**",
       "iterations": 2,
       "actions": [
         {
@@ -409,6 +409,8 @@
             "commanded_at_min": 0.0,
             "minutes_since_command": 60.0,
             "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
             "rto_status_at_command": {
               "setpoints": {
                 "xD": 0.966,
@@ -437,8 +439,8 @@
     },
     {
       "t": 120.0,
-      "final": "The MPC health metrics indicate a sustained model-plant mismatch:  \n- **xD innovation mean** = **-0.000604** (magnitude **6.04e-4**, exceeding the **5e-4** threshold)  \n- **ISE_recent** = **1.78e-5** (17.8\u00d7 nominal **1e-6**)  \n\nThe RTO setpoints (**xD=0.966, xB=0.008**) are aligned with the current process state (current **xD=0.9648**, **xB=0.0077**), but the MPC struggles to track them due to model mismatch. The **RTO variant is MA (Model Adaptive)**, yet the mismatch persists.  \n\n**Action**: Trigger RTO re-optimization to adjust setpoints for improved model-plant alignment.  \n\n**Rationale**:  \n\"Sustained model-plant mismatch detected (xD innovation mean 6.04e-4, ISE 1.78e-5); re-optimizing RTO setpoints to improve tracking.\"  \n\n**Command**:  \n`trigger_rto_run(reason=\"model_plant_mismatch\")`",
-      "iterations": 2,
+      "final": "The MPC health metrics indicate a significant performance issue:\n- **xD innovation mean** (-0.000604) exceeds the threshold of 5e-4 (magnitude 6.04e-4), indicating a model-plant mismatch.\n- **ISE** (1.78e-5) is 17.8\u00d7 higher than the nominal 1e-6, confirming poor tracking.\n- **xB** is at 0.0077 (nominal 0.005), but MPC innovation for xB (-2.19e-5) is within acceptable limits, suggesting the MPC is correctly tracking xB but the process is drifting.\n\n**Action Required**:  \nThe MPC is failing to control xD due to a model mismatch. Adjust the **xD setpoint upward** to 0.965 (slightly above current actual 0.9648) to align with the process drift. This compensates for the mismatch while maintaining product quality (xD > 0.96 is acceptable for most applications).\n\n**Rationale**:  \n- Current xD (0.9648) is already above nominal (0.96), so increasing the setpoint to 0.965 avoids over-control and stabilizes the process.\n- No active constraints exist, so no need to adjust R/S limits.\n- xB deviation (0.0077) is a process issue (not MPC failure), requiring separate investigation (e.g., feed composition, temperature).\n\n**Final Decision**:  \nAdjust xD setpoint to **0.965** to resolve MPC performance issues.  \n\n**Output**:  \n`Adjust xD setpoint to 0.965`",
+      "iterations": 3,
       "actions": [
         {
           "iteration": 0,
@@ -624,7 +626,7 @@
           }
         },
         {
-          "iteration": 0,
+          "iteration": 1,
           "tool": "get_mpc_health",
           "status": "executed",
           "args": {},
@@ -645,74 +647,12 @@
             },
             "innovation_window_samples": 20
           }
-        },
-        {
-          "iteration": 0,
-          "tool": "get_economic_context",
-          "status": "executed",
-          "args": {},
-          "result": {
-            "prices": {
-              "F": 1.0,
-              "z_F": 0.5,
-              "p_D": 29.3513,
-              "p_pen": 2.0,
-              "p_B": 0.3,
-              "c_S": 0.1306,
-              "xB_max": 0.05,
-              "D_max": null
-            },
-            "last_rto_objective": 14.12398244784666,
-            "model_plant_gap": -0.00032717362942946693,
-            "current_rto_setpoints": {
-              "xD": 0.966,
-              "xB": 0.008
-            }
-          }
-        },
-        {
-          "iteration": 0,
-          "tool": "get_rto_status",
-          "status": "executed",
-          "args": {},
-          "result": {
-            "rto_has_run": true,
-            "commanded_setpoints": {
-              "xD": 0.966,
-              "xB": 0.008
-            },
-            "commanded_at_min": 60.0,
-            "minutes_since_command": 60.0,
-            "rto_variant": "MA",
-            "rto_status_at_command": {
-              "setpoints": {
-                "xD": 0.966,
-                "xB": 0.008
-              },
-              "realized": {
-                "xD": 0.964500000000002,
-                "xB": 0.008000000000001534
-              },
-              "inputs": {
-                "R": 1.9504830878782975,
-                "S": 1.7100097103091114
-              },
-              "objective": 14.12398244784666,
-              "converged": true,
-              "active_constraints": [],
-              "model_plant_gap": -0.00032717362942946693,
-              "type": "MA",
-              "iteration": 2
-            },
-            "settled_since_command": false,
-            "n_rto_commands": 2
-          }
         }
       ]
     },
     {
       "t": 180.0,
-      "final": "The MPC is experiencing significant model-plant mismatch (xD innovation mean = **-0.00105**, far exceeding the 5e-4 threshold) and poor tracking (ISE = **4.47e-5**, >1e-5). The current xD (0.9626) is consistently below the RTO-setpoint (0.9658), while xB (0.0066) aligns closely with its setpoint (0.00685). The RTO variant \"MA\" (Model Adaptive) has already adjusted for minor gaps, but the MPC cannot track the setpoint due to the mismatch. \n\n**Action**: Lower the xD MPC setpoint to **0.963** (closer to the current plant behavior) to improve tracking without compromising purity. This adjustment aligns with the measured xD (0.9626) and reduces the error driving the high innovation/ISE.\n\n**Rationale**:  \n- Current xD (0.9626) is **0.0032 below** the setpoint (0.9658), causing persistent tracking error.  \n- Lowering the target to **0.963** (only **0.0004 below** current measurement) minimizes error while staying within nominal purity (0.96).  \n- No economic shift detected (prices unchanged), so RTO re-run is unnecessary.  \n\n**Final Adjustment**:  \n`update_mpc_setpoints(xD=0.963, xB=0.00685)`  \n\n*Note: xB remains unchanged as it is already tracking well (0.0066 vs 0.00685).*",
+      "final": "Supervisory assessment at t=180 min:  \n- **Process state**: xD = 0.9626 (nominal 0.96), xB = 0.0066 (nominal 0.005). xB is slightly elevated but within acceptable bounds; xD is marginally high.  \n- **MPC health**: Innovation mean for xD = -0.00105 (100\u00d7 nominal), ISE = 4.47e-5 (45\u00d7 nominal). Severe model-plant mismatch for xD, causing poor tracking.  \n- **Economic context**: RTO setpoints (xD=0.9658, xB=0.00685) remain valid; no price changes. Model-plant gap (0.000695) is small.  \n- **RTO status**: Last RTO ran at t=120 min (60 min ago), but process has not settled (settled_since_command=false). MPC cannot track setpoints due to mismatch.  \n\n**Action**: Trigger RTO re-optimization to adjust setpoints for current process behavior. The MPC\u2019s inability to track stems from model-plant mismatch, and the adaptive MA RTO variant requires re-execution to recalibrate.  \n\n**Rationale**: \"MPC exhibiting severe model-plant mismatch (xD innovation mean -0.00105, ISE 4.47e-5); re-run RTO to adjust setpoints for current process dynamics.\"  \n\n**Command**: `trigger_rto_run` with rationale above.  \n\n*Note: Direct setpoint adjustment (update_mpc_target) is unnecessary; RTO re-optimization is the prescribed solution for mismatched MPC behavior.*",
       "iterations": 2,
       "actions": [
         {
@@ -959,6 +899,8 @@
             "commanded_at_min": 120.0,
             "minutes_since_command": 60.0,
             "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
             "rto_status_at_command": {
               "setpoints": {
                 "xD": 0.9658302397012399,

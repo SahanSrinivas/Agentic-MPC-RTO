@@ -1,0 +1,203 @@
+{
+  "scenario": {
+    "scenario_id": "R3",
+    "regime": "economic-shift",
+    "mechanism": "steam (reboiler-energy) cost c_S multiplied by `factor` at the event",
+    "expected_supervisory_response": "trigger_rto_run -> RTO re-optimizes to a lower-purity, lower-energy operating point"
+  },
+  "config": {
+    "model": "qwen3:30b",
+    "rto_variant": "ma",
+    "agentic": false,
+    "supervisor": "none",
+    "seed": 42
+  },
+  "rto_handoffs": [
+    {
+      "t": 0.0,
+      "setpoints": {
+        "xD": 0.966,
+        "xB": 0.005
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.966,
+          "xB": 0.005
+        },
+        "realized": {
+          "xD": 0.9659999999999996,
+          "xB": 0.0049999999999992455
+        },
+        "inputs": {
+          "R": 1.9509418999838162,
+          "S": 1.7103204402006797
+        },
+        "objective": 14.132981321998502,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 4.9135454327497996e-05,
+        "type": "MA",
+        "iteration": 1
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 60.0,
+      "setpoints": {
+        "xD": 0.966,
+        "xB": 0.008
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.966,
+          "xB": 0.008
+        },
+        "realized": {
+          "xD": 0.966000000000002,
+          "xB": 0.008000000000001534
+        },
+        "inputs": {
+          "R": 1.9504830878782975,
+          "S": 1.7100097103091114
+        },
+        "objective": 14.12348536693836,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 6.999939131269173e-05,
+        "type": "MA",
+        "iteration": 2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 100.0,
+      "setpoints": {
+        "xD": 0.9669310592639058,
+        "xB": 0.004549995029213364
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9669310592639058,
+          "xB": 0.004549995029213364
+        },
+        "realized": {
+          "xD": 0.9669310592639077,
+          "xB": 0.004549995029215267
+        },
+        "inputs": {
+          "R": 1.9511568833441304,
+          "S": 1.7104167750021673
+        },
+        "objective": 13.543255458739655,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0006421129723950258,
+        "type": "MA",
+        "iteration": 3
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 120.0,
+      "setpoints": {
+        "xD": 0.935965524689145,
+        "xB": 0.0028953766423033944
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.935965524689145,
+          "xB": 0.0028953766423033944
+        },
+        "realized": {
+          "xD": 0.9359655246891425,
+          "xB": 0.002895376642301235
+        },
+        "inputs": {
+          "R": 1.9465488635736354,
+          "S": 1.7089343877806027
+        },
+        "objective": 13.521313410785197,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0051465520858666736,
+        "type": "MA",
+        "iteration": 4
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 180.0,
+      "setpoints": {
+        "xD": 0.9204827574646907,
+        "xB": 0.0023277286105439143
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9204827574646907,
+          "xB": 0.0023277286105439143
+        },
+        "realized": {
+          "xD": 0.9204827574646895,
+          "xB": 0.0023277286105430426
+        },
+        "inputs": {
+          "R": 1.9442051418034934,
+          "S": 1.7081662993449749
+        },
+        "objective": 13.490463180631195,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": -0.008914799757699043,
+        "type": "MA",
+        "iteration": 5
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 240.0,
+      "setpoints": {
+        "xD": 0.9127413740527465,
+        "xB": 0.002175473013071466
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9127413740527465,
+          "xB": 0.002175473013071466
+        },
+        "realized": {
+          "xD": 0.9127413740527486,
+          "xB": 0.0021754730130732532
+        },
+        "inputs": {
+          "R": 1.9430131592221738,
+          "S": 1.7077686277243955
+        },
+        "objective": 13.476595756575072,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": -0.0042758331785162085,
+        "type": "MA",
+        "iteration": 6
+      },
+      "settled_since_prev": false
+    }
+  ],
+  "agent_decisions": [],
+  "final_realized": {
+    "xD": 0.9207441006748595,
+    "xB": 0.002277794494452199
+  },
+  "final_setpoint": {
+    "xD": 0.9127413740527465,
+    "xB": 0.002175473013071466
+  },
+  "n_rto_commands": 6,
+  "n_agent_decisions": 0,
+  "n_agent_actions": 0
+}

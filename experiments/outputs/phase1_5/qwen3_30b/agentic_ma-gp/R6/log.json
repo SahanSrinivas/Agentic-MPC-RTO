@@ -1,0 +1,1227 @@
+{
+  "scenario": {
+    "scenario_id": "R6",
+    "regime": "data / sensor (gross error)",
+    "mechanism": "xD analyzer reads biased by `bias` over a window (sensor-only; true state unchanged)",
+    "expected_supervisory_response": "ideally recognized as a sensor fault, not a process change; do not over-react"
+  },
+  "config": {
+    "model": "qwen3:30b",
+    "rto_variant": "ma-gp",
+    "agentic": true,
+    "supervisor": "llm",
+    "seed": 42
+  },
+  "rto_handoffs": [
+    {
+      "t": 0.0,
+      "setpoints": {
+        "xD": 0.9175488885212701,
+        "xB": 0.03621687824604672
+      },
+      "rto_type": "MA-GP",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9175488885212701,
+          "xB": 0.03621687824604672
+        },
+        "realized": {
+          "xD": 0.9175488885212716,
+          "xB": 0.03621687824604775
+        },
+        "inputs": {
+          "R": 1.938561655918938,
+          "S": 1.7044994871556156
+        },
+        "objective": 13.83112687987943,
+        "converged": false,
+        "active_constraints": [],
+        "model_plant_gap": 0.002227229838704048,
+        "type": "MA-GP",
+        "iteration": 1,
+        "trust_radius": 0.2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 60.0,
+      "setpoints": {
+        "xD": 0.9511594786914026,
+        "xB": 0.006904672334600325
+      },
+      "rto_type": "MA-GP",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9511594786914026,
+          "xB": 0.006904672334600325
+        },
+        "realized": {
+          "xD": 0.9511594786914044,
+          "xB": 0.006904672334602164
+        },
+        "inputs": {
+          "R": 1.9483208899456972,
+          "S": 1.7093305773869587
+        },
+        "objective": 14.128803510534865,
+        "converged": false,
+        "active_constraints": [],
+        "model_plant_gap": 0.00021851964919328282,
+        "type": "MA-GP",
+        "iteration": 2,
+        "trust_radius": 0.2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 120.0,
+      "setpoints": {
+        "xD": 0.9511594786914026,
+        "xB": 0.006904672334600325
+      },
+      "rto_type": "MA-GP",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9511594786914026,
+          "xB": 0.006904672334600325
+        },
+        "realized": {
+          "xD": 0.9511594786914044,
+          "xB": 0.006904672334602164
+        },
+        "inputs": {
+          "R": 1.9483208899456972,
+          "S": 1.7093305773869587
+        },
+        "objective": 14.128803510534865,
+        "converged": false,
+        "active_constraints": [],
+        "model_plant_gap": 0.00021851964919328282,
+        "type": "MA-GP",
+        "iteration": 3,
+        "trust_radius": 0.2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 180.0,
+      "setpoints": {
+        "xD": 0.9511594786914026,
+        "xB": 0.006904672334600325
+      },
+      "rto_type": "MA-GP",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9511594786914026,
+          "xB": 0.006904672334600325
+        },
+        "realized": {
+          "xD": 0.9511594786914044,
+          "xB": 0.006904672334602164
+        },
+        "inputs": {
+          "R": 1.9483208899456972,
+          "S": 1.7093305773869587
+        },
+        "objective": 14.128803510534865,
+        "converged": false,
+        "active_constraints": [],
+        "model_plant_gap": 0.00021851964919328282,
+        "type": "MA-GP",
+        "iteration": 4,
+        "trust_radius": 0.2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 240.0,
+      "setpoints": {
+        "xD": 0.9511594786914026,
+        "xB": 0.006904672334600325
+      },
+      "rto_type": "MA-GP",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9511594786914026,
+          "xB": 0.006904672334600325
+        },
+        "realized": {
+          "xD": 0.9511594786914044,
+          "xB": 0.006904672334602164
+        },
+        "inputs": {
+          "R": 1.9483208899456972,
+          "S": 1.7093305773869587
+        },
+        "objective": 14.128803510534865,
+        "converged": false,
+        "active_constraints": [],
+        "model_plant_gap": 0.00021851964919328282,
+        "type": "MA-GP",
+        "iteration": 5,
+        "trust_radius": 0.2
+      },
+      "settled_since_prev": false
+    }
+  ],
+  "agent_decisions": [
+    {
+      "t": 60.0,
+      "final": "The MPC is functioning correctly, as evidenced by low innovation metrics (near nominal) and a low ISE (3.03e-7 vs. nominal 1e-6). The process is tracking well within expected behavior. However, the RTO's commanded setpoints (xD=0.9175, xB=0.0362) are **infeasible** (RTO status: \"infeasible\"), causing the MPC to operate far from the target (actual xD=0.9599 vs. target 0.9175; actual xB=0.0054 vs. target 0.0362). \n\n**Key Insight**: The MPC is not at fault\u2014the issue stems from the RTO's infeasible optimization solution. The RTO's target (e.g., xD=0.9175) is unachievable due to process constraints (e.g., reflux/steam limits), but the MPC is accurately predicting the process behavior (innovation \u2248 0). The system is operating near nominal purity (xD=0.9599 \u2248 0.96), which is acceptable.\n\n**Action Required**: The RTO must be adjusted (e.g., relax constraints or revise targets) to generate feasible setpoints. No MPC intervention is needed. \n\n**Summary**: MPC health is **good**; RTO feasibility is the root cause.  \n\n**Final Answer**:  \nThe MPC is operating correctly (innovation and ISE within nominal limits). The RTO's infeasible target (xD=0.9175, xB=0.0362) is the issue\u2014adjust RTO constraints to enable feasible operation. No MPC action required.  \n\n**Output**:  \n`MPC HEALTHY. RTO TARGET INFEASIBLE. ADJUST RTO CONSTRAINTS.`",
+      "iterations": 2,
+      "actions": [
+        {
+          "iteration": 0,
+          "tool": "get_process_state",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "t": 60.0,
+            "y": {
+              "xD": 0.9598983575692436,
+              "xB": 0.0054332874890498616
+            },
+            "u": {
+              "R": 1.9501631426273365,
+              "S": 1.709999590445879
+            },
+            "history": {
+              "t": [
+                31.0,
+                32.0,
+                33.0,
+                34.0,
+                35.0,
+                36.0,
+                37.0,
+                38.0,
+                39.0,
+                40.0,
+                41.0,
+                42.0,
+                43.0,
+                44.0,
+                45.0,
+                46.0,
+                47.0,
+                48.0,
+                49.0,
+                50.0,
+                51.0,
+                52.0,
+                53.0,
+                54.0,
+                55.0,
+                56.0,
+                57.0,
+                58.0,
+                59.0,
+                60.0
+              ],
+              "y": {
+                "xD": [
+                  0.9603214707683062,
+                  0.9600064074523714,
+                  0.9601830575120059,
+                  0.9597386436605815,
+                  0.9597162934954117,
+                  0.9600894157191817,
+                  0.9600184163525072,
+                  0.9602387892531493,
+                  0.9601604609573099,
+                  0.9598813636633033,
+                  0.9596934066633335,
+                  0.9598910324424399,
+                  0.9602042580278464,
+                  0.9602595508321315,
+                  0.9599217169213191,
+                  0.9596126053484954,
+                  0.9597207166443363,
+                  0.9602097629946597,
+                  0.9600915929831612,
+                  0.9600349713997913,
+                  0.9599122961185867,
+                  0.9599300429225709,
+                  0.9602388022275746,
+                  0.9601631913733233,
+                  0.9598633566769126,
+                  0.9599683925364292,
+                  0.9601249298898459,
+                  0.9603087515173582,
+                  0.9597994785193695,
+                  0.9598983575692436
+                ],
+                "xB": [
+                  0.005023885928845372,
+                  0.004738548898922348,
+                  0.004975934467248272,
+                  0.004729386396676428,
+                  0.004978905477500263,
+                  0.005129287763338541,
+                  0.005098166681329735,
+                  0.00507316441912422,
+                  0.00484863329920558,
+                  0.004854388064088533,
+                  0.005015382149675062,
+                  0.005021993390676434,
+                  0.0051858164962086065,
+                  0.005040545860341054,
+                  0.004985439520285889,
+                  0.004687071290173885,
+                  0.004721847171460148,
+                  0.0047877311764559565,
+                  0.0052970499438466205,
+                  0.005318768773868492,
+                  0.0051066637283082245,
+                  0.005018236699850983,
+                  0.00456072628670195,
+                  0.004972049006211868,
+                  0.004743877783728443,
+                  0.0049045002174534546,
+                  0.005136171745873082,
+                  0.004975566864623325,
+                  0.005195194183630835,
+                  0.0054332874890498616
+                ]
+              },
+              "u": {
+                "R": [
+                  1.949933307409007,
+                  1.9498734514290839,
+                  1.9500462128056189,
+                  1.9499289523668035,
+                  1.9501407209770867,
+                  1.9500800185319416,
+                  1.9499178725017785,
+                  1.950011727162908,
+                  1.949921640417312,
+                  1.9499463933881844,
+                  1.9500526506670126,
+                  1.9501344465368298,
+                  1.9500150380468357,
+                  1.9499032288603966,
+                  1.9499056473977139,
+                  1.9500669408405107,
+                  1.9501834655291992,
+                  1.9500711457772315,
+                  1.9498139534195735,
+                  1.9499562384402724,
+                  1.9500317427805507,
+                  1.9501356349815686,
+                  1.9500993483626905,
+                  1.94982272416329,
+                  1.9498800767823004,
+                  1.9500296051976762,
+                  1.949990867809187,
+                  1.949966422970932,
+                  1.9498371110120862,
+                  1.9501631426273365
+                ],
+                "S": [
+                  1.7100581081356079,
+                  1.7100457366785278,
+                  1.7099413126673646,
+                  1.7100140934456207,
+                  1.7099115703815957,
+                  1.7100532964736255,
+                  1.710059648554221,
+                  1.7099808969879287,
+                  1.709988632401846,
+                  1.7099739605390076,
+                  1.7099843453447343,
+                  1.7100462243744086,
+                  1.7099831011598141,
+                  1.7100194888871079,
+                  1.7099911557312395,
+                  1.7100085487589647,
+                  1.7099002714214921,
+                  1.7099647233886457,
+                  1.709997372447115,
+                  1.7101639336166634,
+                  1.7100720962268747,
+                  1.709950202231181,
+                  1.7099306558302674,
+                  1.7098862720620776,
+                  1.7100905569005205,
+                  1.7099543592938082,
+                  1.710032806475528,
+                  1.710014584451163,
+                  1.7099723588117284,
+                  1.709999590445879
+                ]
+              }
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_mpc_health",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "innovation_mean": {
+              "xD": -1.647047102466209e-05,
+              "xB": 4.121973089968895e-06
+            },
+            "innovation_std": {
+              "xD": 0.0002099691911440157,
+              "xB": 0.00019095640719170824
+            },
+            "active_constraints": [],
+            "ise_recent": 3.027735604759284e-07,
+            "ise_recent_by_output": {
+              "xD": 1.7081427053987044e-07,
+              "xB": 1.3195928993605795e-07
+            },
+            "innovation_window_samples": 20
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_economic_context",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "prices": {
+              "F": 1.0,
+              "z_F": 0.5,
+              "p_D": 29.3513,
+              "p_pen": 2.0,
+              "p_B": 0.3,
+              "c_S": 0.1306,
+              "xB_max": 0.05,
+              "D_max": null
+            },
+            "last_rto_objective": 13.83112687987943,
+            "model_plant_gap": 0.002227229838704048,
+            "current_rto_setpoints": {
+              "xD": 0.9175488885212701,
+              "xB": 0.03621687824604672
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_rto_status",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "rto_has_run": true,
+            "commanded_setpoints": {
+              "xD": 0.9175488885212701,
+              "xB": 0.03621687824604672
+            },
+            "commanded_at_min": 0.0,
+            "minutes_since_command": 60.0,
+            "rto_variant": "MA-GP",
+            "rto_converged": false,
+            "rto_solve_status": "infeasible",
+            "rto_status_at_command": {
+              "setpoints": {
+                "xD": 0.9175488885212701,
+                "xB": 0.03621687824604672
+              },
+              "realized": {
+                "xD": 0.9175488885212716,
+                "xB": 0.03621687824604775
+              },
+              "inputs": {
+                "R": 1.938561655918938,
+                "S": 1.7044994871556156
+              },
+              "objective": 13.83112687987943,
+              "converged": false,
+              "active_constraints": [],
+              "model_plant_gap": 0.002227229838704048,
+              "type": "MA-GP",
+              "iteration": 1,
+              "trust_radius": 0.2
+            },
+            "settled_since_command": false,
+            "n_rto_commands": 1
+          }
+        }
+      ]
+    },
+    {
+      "t": 120.0,
+      "final": "The MPC health metrics show a severe model-plant mismatch: xD innovation mean (0.00475) is **47.5\u00d7 above** the nominal threshold (5e-4), and ISE (0.0002378) is **237\u00d7 above** nominal (1e-6). The process state (xD=0.9676, xB=0.00494) deviates significantly from the MPC's target (xD=0.9512, xB=0.0069), confirming persistent tracking failure. The RTO status reveals the last command was **infeasible** (rto_solve_status: \"infeasible\") with no plant settling, causing the MPC to chase unachievable setpoints. Economic context shows no price shifts (all prices nominal), so the issue is purely feasibility-driven.  \n\n**Action**: Trigger RTO re-optimization to generate feasible setpoints.  \n\n`trigger_rto_run(\"RTO was infeasible; re-optimizing for achievable setpoints to resolve MPC tracking failure\")`",
+      "iterations": 2,
+      "actions": [
+        {
+          "iteration": 0,
+          "tool": "get_process_state",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "t": 120.0,
+            "y": {
+              "xD": 0.9675975906022755,
+              "xB": 0.00494307305749451
+            },
+            "u": {
+              "R": 1.9428298003588758,
+              "S": 1.707162979128585
+            },
+            "history": {
+              "t": [
+                91.0,
+                92.0,
+                93.0,
+                94.0,
+                95.0,
+                96.0,
+                97.0,
+                98.0,
+                99.0,
+                100.0,
+                101.0,
+                102.0,
+                103.0,
+                104.0,
+                105.0,
+                106.0,
+                107.0,
+                108.0,
+                109.0,
+                110.0,
+                111.0,
+                112.0,
+                113.0,
+                114.0,
+                115.0,
+                116.0,
+                117.0,
+                118.0,
+                119.0,
+                120.0
+              ],
+              "y": {
+                "xD": [
+                  0.9599757632775392,
+                  0.9596767040793827,
+                  0.9602671890850218,
+                  0.9599598727359477,
+                  0.9597909496940872,
+                  0.9600947848634586,
+                  0.9600886937882417,
+                  0.9600154997174273,
+                  0.9600299896793496,
+                  0.9595743862788668,
+                  1.0098481573454823,
+                  1.0099390691545842,
+                  0.9904635901208205,
+                  0.9765584680894073,
+                  0.9689518287808374,
+                  0.9664982046161277,
+                  0.9651965105165671,
+                  0.9645401605919908,
+                  0.9666016958357274,
+                  0.9680202687856296,
+                  0.9685767757651993,
+                  0.9672241769311808,
+                  0.9664166230647278,
+                  0.9666975759381062,
+                  0.9666836294193905,
+                  0.9666609079284625,
+                  0.9670636156248867,
+                  0.9671178303262894,
+                  0.9669361048283668,
+                  0.9675975906022755
+                ],
+                "xB": [
+                  0.0047442127690776135,
+                  0.005308001451754196,
+                  0.004919909184239533,
+                  0.005071052106051383,
+                  0.004852556913483756,
+                  0.004774630522120493,
+                  0.004923435550147123,
+                  0.005148029296550949,
+                  0.0051487801429123455,
+                  0.005103278536729162,
+                  0.004741592592595052,
+                  0.00479766239293205,
+                  0.004664403008787425,
+                  0.004883341646505173,
+                  0.0037472636707390258,
+                  0.004537110763456126,
+                  0.006108141954351008,
+                  0.010473738749028261,
+                  0.004254163716244842,
+                  0.002877744344824953,
+                  0.004119235133806012,
+                  0.004672623187311175,
+                  0.005362635941387711,
+                  0.00582263840345946,
+                  0.004989163207136327,
+                  0.004920693899307875,
+                  0.0048306867824958145,
+                  0.0048739430461627025,
+                  0.004734465173291436,
+                  0.00494307305749451
+                ]
+              },
+              "u": {
+                "R": [
+                  1.9500425274713304,
+                  1.9500171816190206,
+                  1.950165877596189,
+                  1.9497551397391677,
+                  1.9500565949025133,
+                  1.9501562253516096,
+                  1.9499234672935972,
+                  1.9499610377580896,
+                  1.9499651817012709,
+                  1.9500206659061137,
+                  1.9502737401743084,
+                  1.9233815059426929,
+                  1.9299253068708353,
+                  1.9385407366608296,
+                  1.942696827754946,
+                  1.9432979216905668,
+                  1.9419014481953367,
+                  1.940152364849614,
+                  1.9396427921766985,
+                  1.9403272726029668,
+                  1.9414059786527005,
+                  1.941809720695228,
+                  1.9423829200864309,
+                  1.9423329282094246,
+                  1.9419500341887364,
+                  1.9421201762308946,
+                  1.9425106092346371,
+                  1.942537876055307,
+                  1.942647150625098,
+                  1.9428298003588758
+                ],
+                "S": [
+                  1.7100147467657394,
+                  1.7098166497031164,
+                  1.7101007350319921,
+                  1.7099936709107617,
+                  1.7100904446288099,
+                  1.7098966226643337,
+                  1.7100010843185676,
+                  1.7099817694259964,
+                  1.710119516008381,
+                  1.7100264937942107,
+                  1.7099295181428054,
+                  1.711084612559817,
+                  1.7095039087219224,
+                  1.7085275372188626,
+                  1.7068473744485093,
+                  1.7024600032972343,
+                  1.7026039006358251,
+                  1.7047208316008313,
+                  1.706533540012134,
+                  1.706956216495849,
+                  1.7068137631952354,
+                  1.7064918194797711,
+                  1.7061049500116146,
+                  1.7063457332198446,
+                  1.706880152861291,
+                  1.706944887665786,
+                  1.7071787793898934,
+                  1.707217936368318,
+                  1.7072219766659134,
+                  1.707162979128585
+                ]
+              }
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_mpc_health",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "innovation_mean": {
+              "xD": 0.004753116876140872,
+              "xB": -2.190093853556522e-05
+            },
+            "innovation_std": {
+              "xD": 0.010453104062643968,
+              "xB": 0.00024214478226532561
+            },
+            "active_constraints": [],
+            "ise_recent": 0.00023782779404639466,
+            "ise_recent_by_output": {
+              "xD": 0.0002377063210872806,
+              "xB": 1.21472959114065e-07
+            },
+            "innovation_window_samples": 20
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_economic_context",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "prices": {
+              "F": 1.0,
+              "z_F": 0.5,
+              "p_D": 29.3513,
+              "p_pen": 2.0,
+              "p_B": 0.3,
+              "c_S": 0.1306,
+              "xB_max": 0.05,
+              "D_max": null
+            },
+            "last_rto_objective": 14.128803510534865,
+            "model_plant_gap": 0.00021851964919328282,
+            "current_rto_setpoints": {
+              "xD": 0.9511594786914026,
+              "xB": 0.006904672334600325
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_rto_status",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "rto_has_run": true,
+            "commanded_setpoints": {
+              "xD": 0.9511594786914026,
+              "xB": 0.006904672334600325
+            },
+            "commanded_at_min": 60.0,
+            "minutes_since_command": 60.0,
+            "rto_variant": "MA-GP",
+            "rto_converged": false,
+            "rto_solve_status": "infeasible",
+            "rto_status_at_command": {
+              "setpoints": {
+                "xD": 0.9511594786914026,
+                "xB": 0.006904672334600325
+              },
+              "realized": {
+                "xD": 0.9511594786914044,
+                "xB": 0.006904672334602164
+              },
+              "inputs": {
+                "R": 1.9483208899456972,
+                "S": 1.7093305773869587
+              },
+              "objective": 14.128803510534865,
+              "converged": false,
+              "active_constraints": [],
+              "model_plant_gap": 0.00021851964919328282,
+              "type": "MA-GP",
+              "iteration": 2,
+              "trust_radius": 0.2
+            },
+            "settled_since_command": false,
+            "n_rto_commands": 2
+          }
+        }
+      ]
+    },
+    {
+      "t": 180.0,
+      "final": "The process is operating near nominal conditions (xD = 0.9598 vs. nominal 0.96, xB = 0.00483 vs. nominal 0.005). MPC health metrics are within acceptable limits (innovation means \u2248 2.5\u00d7 nominal max threshold, ISE = 3.5\u00d710\u207b\u2077 < 1\u00d710\u207b\u2076). However, the **RTO status reveals a critical issue**: the last RTO command (at 120 min) was **infeasible** (rto_solve_status: \"infeasible\"), and the commanded setpoints (xD = 0.9512, xB = 0.0069) are **not achievable** (actual xB = 0.00483, significantly better than target). The MPC is tracking well (low innovation), but the target itself is unattainable due to process constraints or model mismatch.\n\n**Action Required**:  \nTrigger a new RTO run to generate a **feasible setpoint** that aligns with current process dynamics. The previous RTO failed to find a solution, and the current process is operating outside the target range (xB better than setpoint), indicating the RTO needs recalibration.\n\n**Justification**:  \n- RTO variant \"MA-GP\" attempted optimization but failed (infeasible).  \n- Model-plant gap (0.0002185) is small, confirming the model is accurate.  \n- Re-running RTO will adjust setpoints to a feasible region (e.g., lower xB target to match achievable process behavior).  \n\n**No MPC adjustment needed**\u2014the MPC is functioning correctly. The issue lies with the RTO\u2019s infeasible target, requiring a new optimization.  \n\n**Final Decision**:  \n`trigger_rto_run()` to resolve infeasibility and align RTO setpoints with achievable process conditions.  \n\n---  \n**Summary of Key Metrics**:  \n| Metric                | Value               | Threshold       | Status       |  \n|-----------------------|---------------------|-----------------|--------------|  \n| MPC Innovation (xB)   | 8.58\u00d710\u207b\u2076          | < 5\u00d710\u207b\u2074        | **OK**       |  \n| MPC ISE               | 3.5\u00d710\u207b\u2077           | < 1\u00d710\u207b\u2076        | **OK**       |  \n| RTO Feasibility       | Infeasible         | \u2014               | **Critical** |  \n| RTO Setpoint (xB)     | 0.0069             | Actual xB = 0.0048 | **Unachievable** |",
+      "iterations": 2,
+      "actions": [
+        {
+          "iteration": 0,
+          "tool": "get_process_state",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "t": 180.0,
+            "y": {
+              "xD": 0.9597946770478412,
+              "xB": 0.0048315241419178735
+            },
+            "u": {
+              "R": 1.9499665259855752,
+              "S": 1.7100837701103568
+            },
+            "history": {
+              "t": [
+                151.0,
+                152.0,
+                153.0,
+                154.0,
+                155.0,
+                156.0,
+                157.0,
+                158.0,
+                159.0,
+                160.0,
+                161.0,
+                162.0,
+                163.0,
+                164.0,
+                165.0,
+                166.0,
+                167.0,
+                168.0,
+                169.0,
+                170.0,
+                171.0,
+                172.0,
+                173.0,
+                174.0,
+                175.0,
+                176.0,
+                177.0,
+                178.0,
+                179.0,
+                180.0
+              ],
+              "y": {
+                "xD": [
+                  0.9589459356516472,
+                  0.959769739198273,
+                  0.9604407914047288,
+                  0.9602483231047803,
+                  0.9598195066953533,
+                  0.9598613830424182,
+                  0.9598028895232344,
+                  0.9599059891123867,
+                  0.9601327574665933,
+                  0.9595205471686397,
+                  0.9595255429117927,
+                  0.9602121535262479,
+                  0.95985432674837,
+                  0.9598981482410364,
+                  0.959853947629338,
+                  0.9601680467626212,
+                  0.9596039116502577,
+                  0.9599748848612834,
+                  0.9604016015024666,
+                  0.9599131521661358,
+                  0.9595566062052417,
+                  0.959986577167897,
+                  0.9600739298930399,
+                  0.9602929514319867,
+                  0.960045097590327,
+                  0.9597223002098813,
+                  0.9598937744950549,
+                  0.9602346674880585,
+                  0.960004443524853,
+                  0.9597946770478412
+                ],
+                "xB": [
+                  0.006814569261622678,
+                  0.005559325808794984,
+                  0.0049576647449717974,
+                  0.004541124657520303,
+                  0.004524520788960092,
+                  0.00480892695817778,
+                  0.005163676277458208,
+                  0.005373252521262876,
+                  0.005295686410648415,
+                  0.005108581626265673,
+                  0.004929740938332737,
+                  0.00508993651183701,
+                  0.004778676716507088,
+                  0.004800149597165808,
+                  0.005145226048089416,
+                  0.005064364408701675,
+                  0.005058705089815733,
+                  0.005256350449742055,
+                  0.0047033219806217295,
+                  0.005034531583392021,
+                  0.005263221877572846,
+                  0.005105597476481942,
+                  0.005322839636029012,
+                  0.005009645868879473,
+                  0.004984618943077363,
+                  0.004871443667506737,
+                  0.004898208861451376,
+                  0.004685189211434867,
+                  0.005281391048776388,
+                  0.0048315241419178735
+                ]
+              },
+              "u": {
+                "R": [
+                  1.9518998546057404,
+                  1.9511812830213906,
+                  1.9510358610972982,
+                  1.9511123232940208,
+                  1.9512659250871744,
+                  1.9512219188301851,
+                  1.9508508489299783,
+                  1.9506512632131892,
+                  1.9505042931772247,
+                  1.9504175763353833,
+                  1.9507856753529904,
+                  1.950609485265482,
+                  1.9501305366688282,
+                  1.9503042838876123,
+                  1.9501999693091872,
+                  1.9502245007544352,
+                  1.9500139445533617,
+                  1.9504105611594242,
+                  1.9500831601653699,
+                  1.9498127282997924,
+                  1.950088846894806,
+                  1.9501960963418887,
+                  1.9499611282837148,
+                  1.9500681211301103,
+                  1.9498625585567106,
+                  1.9499423029714622,
+                  1.950069114647515,
+                  1.9499651584575943,
+                  1.9497995185161416,
+                  1.9499665259855752
+                ],
+                "S": [
+                  1.7111283752897894,
+                  1.7114731803553465,
+                  1.7114417926795364,
+                  1.7112451590643503,
+                  1.7108616459820067,
+                  1.710592758098305,
+                  1.7104837834884516,
+                  1.7105557388632193,
+                  1.7106049268941708,
+                  1.7105092588977866,
+                  1.7103009401605118,
+                  1.710221344674943,
+                  1.710289128949781,
+                  1.7101064138823874,
+                  1.7101742625672747,
+                  1.7102624970439089,
+                  1.710159937401862,
+                  1.710057172083703,
+                  1.7100732019591043,
+                  1.7098912182811477,
+                  1.7101108631035165,
+                  1.710174181168127,
+                  1.7100274074270942,
+                  1.7099493806466985,
+                  1.7099619385889349,
+                  1.7099975824349947,
+                  1.709948585802451,
+                  1.7100059904774898,
+                  1.709874716946106,
+                  1.7100837701103568
+                ]
+              }
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_mpc_health",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "innovation_mean": {
+              "xD": -2.535048293491241e-05,
+              "xB": 8.58356070720977e-06
+            },
+            "innovation_std": {
+              "xD": 0.00035272410893182,
+              "xB": 0.00024057766193816266
+            },
+            "active_constraints": [],
+            "ise_recent": 3.509348972026327e-07,
+            "ise_recent_by_output": {
+              "xD": 1.455233988509552e-07,
+              "xB": 2.0541149835167746e-07
+            },
+            "innovation_window_samples": 20
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_economic_context",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "prices": {
+              "F": 1.0,
+              "z_F": 0.5,
+              "p_D": 29.3513,
+              "p_pen": 2.0,
+              "p_B": 0.3,
+              "c_S": 0.1306,
+              "xB_max": 0.05,
+              "D_max": null
+            },
+            "last_rto_objective": 14.128803510534865,
+            "model_plant_gap": 0.00021851964919328282,
+            "current_rto_setpoints": {
+              "xD": 0.9511594786914026,
+              "xB": 0.006904672334600325
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_rto_status",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "rto_has_run": true,
+            "commanded_setpoints": {
+              "xD": 0.9511594786914026,
+              "xB": 0.006904672334600325
+            },
+            "commanded_at_min": 120.0,
+            "minutes_since_command": 60.0,
+            "rto_variant": "MA-GP",
+            "rto_converged": false,
+            "rto_solve_status": "infeasible",
+            "rto_status_at_command": {
+              "setpoints": {
+                "xD": 0.9511594786914026,
+                "xB": 0.006904672334600325
+              },
+              "realized": {
+                "xD": 0.9511594786914044,
+                "xB": 0.006904672334602164
+              },
+              "inputs": {
+                "R": 1.9483208899456972,
+                "S": 1.7093305773869587
+              },
+              "objective": 14.128803510534865,
+              "converged": false,
+              "active_constraints": [],
+              "model_plant_gap": 0.00021851964919328282,
+              "type": "MA-GP",
+              "iteration": 3,
+              "trust_radius": 0.2
+            },
+            "settled_since_command": false,
+            "n_rto_commands": 3
+          }
+        }
+      ]
+    },
+    {
+      "t": 240.0,
+      "final": "Supervisory assessment at t=240 min:  \n- **Process state**: xD = 0.9598 (nominal 0.96), xB = 0.00494 (nominal 0.005) \u2014 within acceptable range.  \n- **MPC health**: Innovation means (-1.57e-5, 9.24e-6) and ISE (5.73e-7) are well below thresholds (5e-4, 1e-5) \u2014 no mismatch or constraint pressure.  \n- **Economic context**: Not checked, but MPC health confirms no disturbance.  \n- **RTO status**: Not required to act (MPC tracking is nominal).  \n\n**Conclusion**: Process is operating within nominal parameters. No supervisory action needed.  \n\nFinal summary:  \n\"Process and MPC health are nominal (innovation means ~1.5e-5, ISE ~5.7e-7). No action required.\"",
+      "iterations": 3,
+      "actions": [
+        {
+          "iteration": 0,
+          "tool": "get_process_state",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "t": 240.0,
+            "y": {
+              "xD": 0.959758548038824,
+              "xB": 0.004939450141172445
+            },
+            "u": {
+              "R": 1.9500705157230476,
+              "S": 1.710016600607456
+            },
+            "history": {
+              "t": [
+                211.0,
+                212.0,
+                213.0,
+                214.0,
+                215.0,
+                216.0,
+                217.0,
+                218.0,
+                219.0,
+                220.0,
+                221.0,
+                222.0,
+                223.0,
+                224.0,
+                225.0,
+                226.0,
+                227.0,
+                228.0,
+                229.0,
+                230.0,
+                231.0,
+                232.0,
+                233.0,
+                234.0,
+                235.0,
+                236.0,
+                237.0,
+                238.0,
+                239.0,
+                240.0
+              ],
+              "y": {
+                "xD": [
+                  0.9598749754388385,
+                  0.960144448819142,
+                  0.9602863053202109,
+                  0.9599576036448202,
+                  0.959786892864172,
+                  0.9600104500977499,
+                  0.9601650299773028,
+                  0.9600317336777031,
+                  0.9601951755993674,
+                  0.9602149968532692,
+                  0.9598342175335212,
+                  0.960303756975897,
+                  0.9599720714032652,
+                  0.9600314173525429,
+                  0.959956937838838,
+                  0.9598304731634805,
+                  0.959553704625382,
+                  0.9597461168288874,
+                  0.9600232109897632,
+                  0.960383942041842,
+                  0.9602734225183077,
+                  0.9599581907643596,
+                  0.959963174540518,
+                  0.9602008568095303,
+                  0.959964193646288,
+                  0.9598960167405773,
+                  0.9599441140026865,
+                  0.9600362018083967,
+                  0.9597678664448684,
+                  0.959758548038824
+                ],
+                "xB": [
+                  0.005247683033706477,
+                  0.004690137744520668,
+                  0.00473663044889193,
+                  0.004698262850367307,
+                  0.005038837698164987,
+                  0.005229800115640651,
+                  0.005321322086660491,
+                  0.004840905248619568,
+                  0.004993942771118672,
+                  0.005071339258993671,
+                  0.0049029565790337775,
+                  0.005477456931020216,
+                  0.005106954210174222,
+                  0.00482232830274021,
+                  0.004957510181563022,
+                  0.00465715240807186,
+                  0.004491549428952905,
+                  0.004923208558093238,
+                  0.005439348759162845,
+                  0.00485925437375631,
+                  0.00516730235181924,
+                  0.00517672568798466,
+                  0.004794595606085801,
+                  0.004745335566966755,
+                  0.005595049718932071,
+                  0.00533025572194691,
+                  0.00516178708941814,
+                  0.0050433161184675656,
+                  0.004893115172817541,
+                  0.004939450141172445
+                ]
+              },
+              "u": {
+                "R": [
+                  1.9501033676058197,
+                  1.9501163702116902,
+                  1.9499417516685091,
+                  1.949802266608825,
+                  1.9499743292517422,
+                  1.9500338419457957,
+                  1.9499906779732,
+                  1.9499632415248374,
+                  1.9500310875397244,
+                  1.9498600267525192,
+                  1.9498467992962076,
+                  1.9500507846464228,
+                  1.9498671113218826,
+                  1.9500886500809738,
+                  1.9499678191854046,
+                  1.9499820412040292,
+                  1.9499461050859759,
+                  1.950138286382417,
+                  1.9500392758857972,
+                  1.9499300634803067,
+                  1.949824013382238,
+                  1.9499948579457675,
+                  1.9500656166736108,
+                  1.949945349603876,
+                  1.9498887177454423,
+                  1.9500439248952062,
+                  1.9500309377300105,
+                  1.9500729457446766,
+                  1.9500482239377388,
+                  1.9500705157230476
+                ],
+                "S": [
+                  1.7099932486369205,
+                  1.7100028637777618,
+                  1.7098424445104008,
+                  1.7099837591115488,
+                  1.7099858284602658,
+                  1.7101054591533171,
+                  1.7100224500264847,
+                  1.7100379373394152,
+                  1.709824524011019,
+                  1.710005102907168,
+                  1.7100586676764076,
+                  1.710008623677729,
+                  1.7101249692352374,
+                  1.709885639740732,
+                  1.7098562747568657,
+                  1.709997667106834,
+                  1.7099418495662968,
+                  1.7098896829895476,
+                  1.7100598130869875,
+                  1.7102009760097716,
+                  1.7099006859396009,
+                  1.7099878928828338,
+                  1.7100398031916215,
+                  1.709966326217125,
+                  1.7098967569373462,
+                  1.710204643339557,
+                  1.7100426386884946,
+                  1.7099330021602612,
+                  1.7099064003926048,
+                  1.710016600607456
+                ]
+              }
+            }
+          }
+        },
+        {
+          "iteration": 1,
+          "tool": "get_mpc_health",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "innovation_mean": {
+              "xD": -1.565338814026305e-05,
+              "xB": 9.242959850983042e-06
+            },
+            "innovation_std": {
+              "xD": 0.00019942413388623347,
+              "xB": 0.0002931017982337474
+            },
+            "active_constraints": [],
+            "ise_recent": 5.730431408343275e-07,
+            "ise_recent_by_output": {
+              "xD": 7.041441625120216e-08,
+              "xB": 5.026287245831253e-07
+            },
+            "innovation_window_samples": 20
+          }
+        }
+      ]
+    }
+  ],
+  "final_realized": {
+    "xD": 0.959758548038824,
+    "xB": 0.004939450141172445
+  },
+  "final_setpoint": {
+    "xD": 0.96,
+    "xB": 0.005
+  },
+  "n_rto_commands": 5,
+  "n_agent_decisions": 4,
+  "n_agent_actions": 0
+}
