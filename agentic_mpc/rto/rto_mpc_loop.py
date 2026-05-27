@@ -85,12 +85,18 @@ class RTOMPCLoop:
         if self.last_handoff is None:
             return {"rto_has_run": False, "minutes_since_command": None,
                     "settled_since_command": False}
+        status = self.last_handoff["rto_status"] or {}
         return {"rto_has_run": True,
                 "commanded_setpoints": self.last_handoff["setpoints"],
                 "commanded_at_min": self.last_handoff["t"],
                 "minutes_since_command": round(self.t - self.last_handoff["t"], 3),
                 "rto_variant": self.last_handoff["rto_type"],
-                "rto_status_at_command": self.last_handoff["rto_status"],
+                # surfaced top-level so the agent sees infeasibility directly: a False here means
+                # the RTO could not find a feasible solution (e.g. R5's sub-achievable spec).
+                "rto_converged": bool(status.get("converged", True)),
+                "rto_solve_status": status.get("status", "optimal" if status.get("converged", True)
+                                               else "infeasible"),
+                "rto_status_at_command": status,
                 "settled_since_command": self._settled_since_command,
                 "n_rto_commands": len(self.handoffs)}
 

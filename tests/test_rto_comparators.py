@@ -95,6 +95,22 @@ def test_comparators_respect_constraint_boundary(cls, kw):
 
 
 # --- gain-invariance finding (documented) ---------------------------------------------
+@pytest.mark.parametrize("cls,kw", [(ModifierAdaptation, dict(input_noise_scale=0.0)),
+                                    (MAGaussianProcess, dict(n_initial_samples=4, grid_res=9))])
+def test_infeasible_spec_no_crash_and_reports_unconverged(cls, kw):
+    """R5's sub-achievable xB_max collapses the feasible box. Both comparators must report
+    converged=False -- NOT crash on uniform(low>high) (the reported bug), and NOT solve at an
+    infeasible point -- holding a finite, sane setpoint."""
+    econ = WoodBerryEconomics().with_overrides(xB_max=0.0008)   # below achievable min ~0.0011
+    plant = _plant(noise=0.0)
+    cmp = cls(economics=econ, plant=plant, plant_params=plant.params, seed=0, **kw)
+    cmp.run_until_convergence(max_iterations=8)                 # must NOT raise
+    res = cmp.get_status()
+    assert res["converged"] is False, res
+    sp = res["setpoints"]
+    assert 0.85 < sp["xD"] < 1.0 and 0.0 < sp["xB"] < 0.06, sp  # held, finite, sane range
+
+
 def test_pure_gain_mismatch_is_invariant_at_optimum():
     """A +15% R->xD gain perturbation leaves the economic optimum at the nominal compositions
     (it sits where the input deviation is 0), so MA reduces to the nominal answer -- the

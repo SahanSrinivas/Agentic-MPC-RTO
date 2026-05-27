@@ -260,8 +260,11 @@ class ModifierAdaptation(_RTOComparatorBase):
         self.current_sp = sp_next
         self.iteration_count = k
         active = ["xB_max"] if abs(y_p[1] - self.economics.params.xB_max) < 1e-3 else []
+        extra = {"iteration": k}
+        if not converged:                       # _solve_modified returned None -> infeasible
+            extra["status"] = "infeasible"
         self._last = self._result(self.current_sp, converged, float(profit_m - profit_p),
-                                  active, {"iteration": k})
+                                  active, extra)
         return rec
 
     def _solve_modified(self, sp_k: np.ndarray) -> np.ndarray | None:
@@ -269,6 +272,11 @@ class ModifierAdaptation(_RTOComparatorBase):
 
         p = self.economics.params
         lo, hi = self._box()
+        # Collapsed feasible box (e.g. R5 tightens xB_max below the achievable minimum ~0.0011) ->
+        # the problem is genuinely infeasible. Return None so iterate() records converged=False and
+        # holds the previous setpoint, instead of crashing on uniform(low > high).
+        if hi[0] < lo[0] or hi[1] < lo[1]:
+            return None
         best = None
         starts = [tuple(sp_k)] + [(float(self._rng.uniform(lo[0], hi[0])),
                                    float(self._rng.uniform(lo[1], hi[1])))
@@ -394,6 +402,21 @@ class MAGaussianProcess(_RTOComparatorBase):
 
         k = self.iteration_count + 1
         p = self.economics.params
+        lo_b, hi_b = self._box()
+        # Collapsed feasible box (e.g. R5 tightens xB_max below the achievable minimum ~0.0011) ->
+        # genuinely infeasible. Report converged=False and hold the last feasible setpoint (or the
+        # nominal optimum), mirroring MA's guard -- don't sample/solve an infeasible box.
+        if hi_b[0] < lo_b[0] or hi_b[1] < lo_b[1]:
+            cur = self.incumbent_sp if self.incumbent_sp is not None else self.y_nom
+            self.iteration_count = k
+            rec = {"iteration": k, "phase": "infeasible", "setpoint": np.asarray(cur).tolist(),
+                   "plant_profit": float("nan"), "feasible": False, "accepted": False,
+                   "trust_radius": self.trust_radius, "incumbent_profit": self.incumbent_profit}
+            self.history.append(rec)
+            self._last = self._result(np.asarray(cur), False, None, ["xB_max(infeasible)"],
+                                      {"iteration": k, "trust_radius": self.trust_radius,
+                                       "status": "infeasible"})
+            return rec
         if k <= self.n_initial_samples:                 # global LHS seeding
             s = LatinHypercube(d=2, seed=int(self._rng.integers(1_000_000_000))).random(1)[0]
             sp = self._unscale(s)

@@ -80,6 +80,21 @@ def test_r7_steps_load_disturbance():
     assert loop.plant._output_bias[0] == -0.03
 
 
+def test_r5_infeasible_does_not_crash_through_loop_with_ma():
+    """Reproduces the reported crash path: R5 (sub-achievable xB_max) + MA RTO through the loop.
+    Must NOT raise ValueError(high<low), and the RTO must report infeasibility to the supervisor."""
+    from agentic_mpc.rto import ModifierAdaptation
+    plant = WoodBerryPlant(dt=1.0, seed=42)
+    mpc = ClassicalMPC(dt=1.0)
+    rto = ModifierAdaptation(plant=plant, plant_params=plant.params, seed=0)
+    loop = RTOMPCLoop(plant, mpc, rto, rto_interval_min=30.0)
+    sc = SCENARIOS["R5"](t_event=60, xB_max=0.0008)
+    loop.run(150.0, on_step=sc.on_step)                        # must NOT raise
+    st = loop.get_rto_status()
+    assert st["rto_converged"] is False                        # surfaced infeasibility to the agent
+    assert st["rto_solve_status"] == "infeasible"
+
+
 def test_baseline_loop_smoke_runs_end_to_end():
     """A full baseline (no-agent) RTO-MPC loop with R7 integrates and stays physical."""
     loop = _loop(rto_interval_min=30.0)
