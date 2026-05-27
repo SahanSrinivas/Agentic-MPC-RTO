@@ -1,0 +1,8 @@
+scenario,agentic_ma_actions,n_decisions,what_this_tests
+R1,0,4,slow drift - mostly hold
+R2,0,4,abrupt fault - intervene
+R3,0,4,steam-cost spike - respond
+R4,0,4,demand cap - RTO drives
+R5,0,4,infeasibility - recognize/hold
+R6,0,4,sensor anomaly - diagnose
+R7,0,4,load disturbance - detect MPC stress

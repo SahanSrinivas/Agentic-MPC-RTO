@@ -1,9 +1,9 @@
 {
   "scenario": {
-    "scenario_id": "R1",
-    "regime": "model-mismatch (slow drift)",
-    "mechanism": "feed-composition load drift: xD output bias ramps linearly over the window",
-    "expected_supervisory_response": "track with a faster RTO cadence (MA/MA-GP follow the drift); nominal RTO lags"
+    "scenario_id": "R4",
+    "regime": "economic-shift (constraint-driven)",
+    "mechanism": "distillate-demand cap D <= D_max imposed at the event",
+    "expected_supervisory_response": "trigger_rto_run -> RTO re-optimizes to a higher-purity (demand-capped) point"
   },
   "config": {
     "model": "qwen3:30b",
@@ -56,19 +56,49 @@
           "xB": 0.006904672334600325
         },
         "realized": {
-          "xD": 0.9496594786914044,
+          "xD": 0.9511594786914044,
           "xB": 0.006904672334602164
         },
         "inputs": {
           "R": 1.9483208899456972,
           "S": 1.7093305773869587
         },
-        "objective": 14.128386890233093,
+        "objective": 14.128803510534865,
         "converged": false,
         "active_constraints": [],
-        "model_plant_gap": 0.000625202566988392,
+        "model_plant_gap": 0.00021851964919328282,
         "type": "MA-GP",
         "iteration": 2,
+        "trust_radius": 0.2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 100.0,
+      "setpoints": {
+        "xD": 0.9511594786914026,
+        "xB": 0.006904672334600325
+      },
+      "rto_type": "MA-GP",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9511594786914026,
+          "xB": 0.006904672334600325
+        },
+        "realized": {
+          "xD": 0.9511594786914044,
+          "xB": 0.006904672334602164
+        },
+        "inputs": {
+          "R": 1.9483208899456972,
+          "S": 1.7093305773869587
+        },
+        "objective": 14.128803510534865,
+        "converged": false,
+        "active_constraints": [],
+        "model_plant_gap": 0.00021851964919328282,
+        "type": "MA-GP",
+        "iteration": 3,
         "trust_radius": 0.2
       },
       "settled_since_prev": false
@@ -86,19 +116,19 @@
           "xB": 0.006904672334600325
         },
         "realized": {
-          "xD": 0.9406594786914044,
+          "xD": 0.9511594786914044,
           "xB": 0.006904672334602164
         },
         "inputs": {
           "R": 1.9483208899456972,
           "S": 1.7093305773869587
         },
-        "objective": 14.12468900614293,
+        "objective": 14.128803510534865,
         "converged": false,
         "active_constraints": [],
-        "model_plant_gap": 0.000625202566988392,
+        "model_plant_gap": 0.00021851964919328282,
         "type": "MA-GP",
-        "iteration": 3,
+        "iteration": 4,
         "trust_radius": 0.2
       },
       "settled_since_prev": false
@@ -116,19 +146,19 @@
           "xB": 0.006904672334600325
         },
         "realized": {
-          "xD": 0.9316594786914044,
+          "xD": 0.9511594786914044,
           "xB": 0.006904672334602164
         },
         "inputs": {
           "R": 1.9483208899456972,
           "S": 1.7093305773869587
         },
-        "objective": 14.119304928597934,
+        "objective": 14.128803510534865,
         "converged": false,
         "active_constraints": [],
-        "model_plant_gap": 0.000625202566988392,
+        "model_plant_gap": 0.00021851964919328282,
         "type": "MA-GP",
-        "iteration": 4,
+        "iteration": 5,
         "trust_radius": 0.2
       },
       "settled_since_prev": false
@@ -146,19 +176,19 @@
           "xB": 0.006904672334600325
         },
         "realized": {
-          "xD": 0.9226594786914044,
+          "xD": 0.9511594786914044,
           "xB": 0.006904672334602164
         },
         "inputs": {
           "R": 1.9483208899456972,
           "S": 1.7093305773869587
         },
-        "objective": 14.112591268391158,
+        "objective": 14.128803510534865,
         "converged": false,
         "active_constraints": [],
-        "model_plant_gap": 0.000625202566988392,
+        "model_plant_gap": 0.00021851964919328282,
         "type": "MA-GP",
-        "iteration": 5,
+        "iteration": 6,
         "trust_radius": 0.2
       },
       "settled_since_prev": false
@@ -166,14 +196,14 @@
   ],
   "agent_decisions": [],
   "final_realized": {
-    "xD": 0.9554778761120103,
-    "xB": 0.004852331236250267
+    "xD": 0.9602627024053808,
+    "xB": 0.004950462361994354
   },
   "final_setpoint": {
     "xD": 0.96,
     "xB": 0.005
   },
-  "n_rto_commands": 5,
+  "n_rto_commands": 6,
   "n_agent_decisions": 0,
   "n_agent_actions": 0
 }

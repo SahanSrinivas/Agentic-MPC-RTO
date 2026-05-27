@@ -1,0 +1,8 @@
+scenario,agentic,baseline,rule_naive,rule_smart,notes
+R1,"act=0, xD=0.9611","act=0, xD=0.9611","act=3, xD=0.961","act=3, xD=0.961",slow drift - mostly hold
+R2,"act=0, xD=0.9617","act=0, xD=0.9617","act=3, xD=0.9607","act=3, xD=0.9607",abrupt fault - intervene
+R3,"act=0, xD=0.9207","act=0, xD=0.9207","act=0, xD=0.9207","act=0, xD=0.9207",steam-cost spike - respond
+R4,"act=0, xD=0.9868","act=0, xD=0.9868","act=0, xD=0.9868","act=0, xD=0.9868",demand cap - RTO drives
+R5,"act=0, xD=0.9663","act=0, xD=0.9663","act=0, xD=0.9663","act=0, xD=0.9663",infeasibility - recognize/hold
+R6,"act=0, xD=0.9658","act=0, xD=0.9658","act=1, xD=0.9663","act=1, xD=0.9663",sensor anomaly - diagnose
+R7,"act=0, xD=0.9606","act=0, xD=0.9606","act=3, xD=0.9597","act=3, xD=0.9597",load disturbance - detect MPC stress

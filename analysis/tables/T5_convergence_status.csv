@@ -1,0 +1,8 @@
+scenario,agentic_ma,agentic_ma-gp,baseline_ma,baseline_ma-gp,rule_naive_ma,rule_naive_ma-gp,rule_smart_ma,rule_smart_ma-gp
+R1,True,False,True,False,True,False,True,False
+R2,True,False,True,False,True,False,True,False
+R3,True,False,True,False,True,False,True,False
+R4,True,False,True,False,True,False,True,False
+R5,False,False,False,False,False,False,False,False
+R6,False,False,False,False,False,False,False,False
+R7,True,False,True,False,True,False,True,False

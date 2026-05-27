@@ -1,0 +1,8 @@
+scenario,agentic_ma,agentic_ma-gp,baseline_ma,baseline_ma-gp,rule_naive_ma,rule_naive_ma-gp,rule_smart_ma,rule_smart_ma-gp
+R1,5,5,5,5,8,5,8,5
+R2,5,5,5,5,8,5,8,5
+R3,6,6,6,6,6,6,6,6
+R4,6,6,6,6,6,6,6,6
+R5,6,6,6,6,6,6,6,6
+R6,5,5,5,5,5,5,5,5
+R7,5,5,5,5,8,5,8,5
