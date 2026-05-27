@@ -20,7 +20,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from agentic_mpc.agent import SYSTEM_PROMPT_RTO, SupervisoryAgent
+from agentic_mpc.agent import (SYSTEM_PROMPT_RTO, RuleBasedSupervisorNaive, RuleBasedSupervisorSmart,
+                               SupervisoryAgent)
 from agentic_mpc.agent.llm_config import LLMConfig
 from agentic_mpc.controllers import ClassicalMPC
 from agentic_mpc.plants import WoodBerryPlant
@@ -31,6 +32,22 @@ from agentic_mpc.scenarios import SCENARIOS
 
 warnings.filterwarnings("ignore")
 _OUT_ROOT = pathlib.Path(__file__).parent / "outputs" / "phase1_5"
+
+
+def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: str,
+                   agentic: bool) -> pathlib.Path:
+    """Config-aware output dir so configurations don't overwrite each other:
+
+      LLM agentic     -> phase1_5/<model>/agentic_<rto>/<scenario>
+      baseline (none) -> phase1_5/<model>/baseline_<rto>/<scenario>
+      rule-based      -> phase1_5/rule_based_<naive|smart>_<rto>/<scenario>   (no model -- no LLM)
+    """
+    rt = rto_variant.replace(" ", "").lower()
+    if supervisor in ("rule-based-naive", "rule-based-smart"):
+        variant = supervisor.replace("rule-based-", "")
+        return _OUT_ROOT / f"rule_based_{variant}_{rt}" / scenario_id
+    kind = "agentic" if (agentic and supervisor == "llm") else "baseline"
+    return _OUT_ROOT / model.replace(":", "_") / f"{kind}_{rt}" / scenario_id
 
 
 def _make_rto(variant: str, plant: WoodBerryPlant, econ: WoodBerryEconomics, seed: int):
@@ -45,21 +62,38 @@ def _make_rto(variant: str, plant: WoodBerryPlant, econ: WoodBerryEconomics, see
 
 
 def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "ma",
-                 agentic: bool = True, t_end: float = 240.0, rto_interval_min: float = 60.0,
-                 agent_interval_min: float = 60.0, seed: int = 0) -> dict:
-    """Run one Phase-1.5 scenario and persist outputs under outputs/phase1_5/<model>/<scenario>/."""
+                 agentic: bool = True, supervisor: str = "llm", t_end: float = 240.0,
+                 rto_interval_min: float = 60.0, agent_interval_min: float = 60.0,
+                 seed: int = 42) -> dict:
+    """Run one Phase-1.5 scenario; persist to a config-aware, model-suffixed output dir.
+
+    ``supervisor`` is one of ``"llm"`` / ``"rule-based-naive"`` / ``"rule-based-smart"`` (ignored
+    when ``agentic`` is False -> baseline). ``seed`` (default 42) propagates to numpy, the plant
+    sensor noise, the RTO multi-start, and the LLM request seed for reproducible replicate runs.
+    """
+    np.random.seed(seed)                                   # global numpy determinism
     scenario = SCENARIOS[scenario_id]()
     dt = 1.0
-    plant = WoodBerryPlant(dt=dt, seed=seed)
+    plant = WoodBerryPlant(dt=dt, seed=seed)               # plant sensor-noise seed
     mpc = ClassicalMPC(dt=dt)
-    rto = _make_rto(rto_variant, plant, WoodBerryEconomics(), seed)
+    rto = _make_rto(rto_variant, plant, WoodBerryEconomics(), seed)   # RTO multi-start seed
     loop = RTOMPCLoop(plant, mpc, rto, rto_interval_min=rto_interval_min, dt=dt)
 
     agent = None
     agent_log: list[dict] = []
     if agentic:
-        agent = SupervisoryAgent(plant, mpc, safety=BoxSafetyEnvelope(), rto=rto, rto_loop=loop,
-                                 config=LLMConfig(model=model), system_prompt=SYSTEM_PROMPT_RTO)
+        if supervisor == "llm":
+            agent = SupervisoryAgent(plant, mpc, safety=BoxSafetyEnvelope(), rto=rto, rto_loop=loop,
+                                     config=LLMConfig(model=model, seed=seed),
+                                     system_prompt=SYSTEM_PROMPT_RTO)
+        elif supervisor == "rule-based-naive":
+            agent = RuleBasedSupervisorNaive(plant, mpc, safety=BoxSafetyEnvelope(), rto=rto,
+                                             rto_loop=loop)
+        elif supervisor == "rule-based-smart":
+            agent = RuleBasedSupervisorSmart(plant, mpc, safety=BoxSafetyEnvelope(), rto=rto,
+                                             rto_loop=loop)
+        else:
+            raise ValueError(f"unknown supervisor {supervisor!r}")
     agent_steps = max(1, int(round(agent_interval_min / dt)))
 
     def on_step(lp, t, y):
@@ -75,20 +109,21 @@ def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "
                               "actions": out["actions"]})
 
     result = loop.run(t_end, on_step=on_step)
-    out_dir = _OUT_ROOT / model.replace(":", "_") / scenario_id
+    out_dir = output_dir_for(scenario_id, model, rto_variant, supervisor, agentic)
     out_dir.mkdir(parents=True, exist_ok=True)
     _plot(result, scenario, out_dir, scenario_id)
-    summary = _summary(result, scenario, agent_log, model, rto_variant, agentic)
+    summary = _summary(result, scenario, agent_log, model, rto_variant, agentic, supervisor, seed)
     (out_dir / "log.json").write_text(json.dumps(summary, indent=2, default=_json_default))
     _print_summary(summary, out_dir)
     return summary
 
 
-def _summary(result, scenario, agent_log, model, rto_variant, agentic) -> dict:
+def _summary(result, scenario, agent_log, model, rto_variant, agentic, supervisor, seed) -> dict:
     h = result["history"]
     return {
         "scenario": scenario.describe(),
-        "config": {"model": model, "rto_variant": rto_variant, "agentic": agentic},
+        "config": {"model": model, "rto_variant": rto_variant, "agentic": agentic,
+                   "supervisor": (supervisor if agentic else "none"), "seed": seed},
         "rto_handoffs": result["handoffs"],
         "agent_decisions": agent_log,
         "final_realized": {"xD": float(h["xD"][-1]), "xB": float(h["xB"][-1])},
@@ -124,8 +159,8 @@ def _plot(result, scenario, out_dir, scenario_id) -> None:
 def _print_summary(s, out_dir) -> None:
     sc = s["scenario"]
     print("=" * 74)
-    print(f"PHASE 1.5 {sc['scenario_id']} ({sc['regime']}) -- model={s['config']['model']} "
-          f"rto={s['config']['rto_variant']} agentic={s['config']['agentic']}")
+    print(f"PHASE 1.5 {sc['scenario_id']} ({sc['regime']}) -- supervisor={s['config']['supervisor']} "
+          f"rto={s['config']['rto_variant']} model={s['config']['model']} seed={s['config']['seed']}")
     print(f"  mechanism: {sc['mechanism']}")
     print(f"  final realized: xD={s['final_realized']['xD']:.4f} xB={s['final_realized']['xB']:.5f}"
           f"  (setpoint xD={s['final_setpoint']['xD']:.4f} xB={s['final_setpoint']['xB']:.5f})")
@@ -145,15 +180,18 @@ def _json_default(o):
 
 def main(scenario_id: str) -> None:
     p = argparse.ArgumentParser(description=f"Phase 1.5 scenario {scenario_id}")
-    p.add_argument("--model", default="qwen3:4b", help="Ollama model id for the agent")
+    p.add_argument("--model", default="qwen3:4b", help="Ollama model id (LLM supervisor only)")
     p.add_argument("--rto", default="ma", choices=["nominal", "ma", "ma-gp", "magp"],
                    help="RTO variant")
-    p.add_argument("--no-agent", action="store_true", help="run the baseline (no LLM agent)")
+    p.add_argument("--supervisor", default="llm",
+                   choices=["llm", "rule-based-naive", "rule-based-smart"],
+                   help="supervisor kind (rule-based variants need no LLM/Ollama)")
+    p.add_argument("--no-agent", action="store_true", help="run the baseline (no supervisor at all)")
     p.add_argument("--t-end", type=float, default=240.0, help="run length [min]")
     p.add_argument("--rto-interval", type=float, default=60.0, help="RTO cadence [min]")
-    p.add_argument("--agent-interval", type=float, default=60.0, help="agent cadence [min]")
-    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--agent-interval", type=float, default=60.0, help="supervisor cadence [min]")
+    p.add_argument("--seed", type=int, default=42, help="seed -> numpy, plant noise, RTO, LLM")
     a = p.parse_args()
     run_scenario(scenario_id, model=a.model, rto_variant=a.rto, agentic=not a.no_agent,
-                 t_end=a.t_end, rto_interval_min=a.rto_interval, agent_interval_min=a.agent_interval,
-                 seed=a.seed)
+                 supervisor=a.supervisor, t_end=a.t_end, rto_interval_min=a.rto_interval,
+                 agent_interval_min=a.agent_interval, seed=a.seed)

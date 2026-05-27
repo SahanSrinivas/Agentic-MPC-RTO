@@ -4,11 +4,16 @@
 #   ./experiments/run_all_phase_1_5.sh [MODEL] [extra args passed to each script...]
 #
 # Examples:
-#   ./experiments/run_all_phase_1_5.sh qwen3:30b                 # agentic, MA RTO (defaults)
-#   ./experiments/run_all_phase_1_5.sh qwen3:4b --rto ma-gp      # MA-GP RTO
-#   ./experiments/run_all_phase_1_5.sh qwen3:4b --no-agent       # baselines only (no LLM)
+#   ./experiments/run_all_phase_1_5.sh qwen3:30b                          # LLM agentic, MA RTO
+#   ./experiments/run_all_phase_1_5.sh qwen3:30b --rto ma-gp              # LLM agentic, MA-GP RTO
+#   ./experiments/run_all_phase_1_5.sh qwen3:30b --no-agent               # baselines only (no LLM)
+#   ./experiments/run_all_phase_1_5.sh _ --supervisor rule-based-naive    # rule-based (no LLM; model arg ignored)
+#   ./experiments/run_all_phase_1_5.sh _ --supervisor rule-based-smart    # rule-based smart variant
 #
-# Outputs land under experiments/outputs/phase1_5/<model>/<scenario>/ (model-name-suffixed).
+# Outputs are config-separated (no overwrites):
+#   phase1_5/<model>/agentic_<rto>/<scenario>      (LLM agentic)
+#   phase1_5/<model>/baseline_<rto>/<scenario>     (--no-agent)
+#   phase1_5/rule_based_{naive,smart}_<rto>/<scenario>   (--supervisor rule-based-*; no model)
 set -euo pipefail
 
 MODEL="${1:-qwen3:4b}"

@@ -15,8 +15,9 @@ class LLMConfig:
     """Backend configuration for the supervisory agent's LLM."""
     base_url: str = "http://localhost:11434/v1"   # Ollama default
     api_key: str = "ollama"                        # Ollama ignores this; SDK requires a value
-    model: str = "qwen3:30b"
-    temperature: float = 0.1
+    model: str = "qwen3:30b"                       # pod's RunPod default
+    temperature: float = 0.1                       # pod's RunPod default
+    seed: int | None = None                        # request seed for reproducible LLM sampling
 
 
 # Single source of truth. To run on Claude Sonnet instead, change ONLY this object, e.g.:

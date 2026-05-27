@@ -110,10 +110,11 @@ class SupervisoryAgent:
         actions: list[dict] = []
 
         for iteration in range(max_iterations):
-            response = self.client.chat.completions.create(
-                model=self.config.model, messages=messages, tools=self.tools,
-                tool_choice="auto", temperature=self.config.temperature,
-            )
+            create_kwargs = dict(model=self.config.model, messages=messages, tools=self.tools,
+                                 tool_choice="auto", temperature=self.config.temperature)
+            if self.config.seed is not None:        # reproducible sampling when a seed is set
+                create_kwargs["seed"] = self.config.seed
+            response = self.client.chat.completions.create(**create_kwargs)
             msg = response.choices[0].message
             messages.append(msg.model_dump(exclude_none=True))
 
