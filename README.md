@@ -91,3 +91,7 @@ bash experiments/run_all_phase_1_5.sh qwen3:30b
 
 Full LLM scenario runs (R1–R7 with a stronger model) are executed on RunPod; local `qwen3:4b`
 is used for wiring verification (it observes but under-reacts with the limited tool set).
+
+**New here?** Read [docs/RUNPOD.md](docs/RUNPOD.md) — a single read-through covering what the
+project is and why, the control architecture and data flow, the 7 scenarios, the supervisor
+comparison matrix, and the exact RunPod reproduction steps.
