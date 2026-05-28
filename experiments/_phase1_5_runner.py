@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import pathlib
 import warnings
 
@@ -22,8 +23,8 @@ import numpy as np
 
 from dataclasses import replace
 
-from agentic_mpc.agent import (SYSTEM_PROMPT_RTO, RuleBasedSupervisorNaive, RuleBasedSupervisorSmart,
-                               SupervisoryAgent)
+from agentic_mpc.agent import (RuleBasedSupervisorNaive, RuleBasedSupervisorSmart,
+                               SupervisoryAgent, prompt_for)
 from agentic_mpc.agent.llm_config import LLM_CONFIG
 from agentic_mpc.controllers import ClassicalMPC
 from agentic_mpc.plants import WoodBerryPlant
@@ -37,10 +38,11 @@ _OUT_ROOT = pathlib.Path(__file__).parent / "outputs" / "phase1_5"
 
 
 def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: str,
-                   agentic: bool) -> pathlib.Path:
+                   agentic: bool, prompt_version: str = "v1") -> pathlib.Path:
     """Config-aware output dir so configurations don't overwrite each other:
 
       LLM agentic     -> phase1_5/<model>/agentic_<rto>/<scenario>
+      LLM agentic v2  -> phase1_5/<model>_promptv2/agentic_<rto>/<scenario>
       baseline (none) -> phase1_5/<model>/baseline_<rto>/<scenario>
       rule-based      -> phase1_5/rule_based_<naive|smart>_<rto>/<scenario>   (no model -- no LLM)
     """
@@ -52,6 +54,10 @@ def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: s
     # sanitize the model name for the path: qwen3:30b -> qwen3_30b, claude-sonnet-4-6 ->
     # claude_sonnet_4_6 (so an Anthropic-backed run lands in its own dir, not qwen3's).
     model_tag = model.replace(":", "_").replace("-", "_").replace(".", "_")
+    # the v2 prompt only differs for the LLM agent; suffix that branch so its outputs land in
+    # their own dir (claude_sonnet_4_6_promptv2/...) and don't overwrite the v1 prompt's runs.
+    if kind == "agentic" and (prompt_version or "v1").lower() == "v2":
+        model_tag += "_promptv2"
     return _OUT_ROOT / model_tag / f"{kind}_{rt}" / scenario_id
 
 
@@ -84,6 +90,10 @@ def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "
     rto = _make_rto(rto_variant, plant, WoodBerryEconomics(), seed)   # RTO multi-start seed
     loop = RTOMPCLoop(plant, mpc, rto, rto_interval_min=rto_interval_min, dt=dt)
 
+    # system-prompt version: v1 (default, frozen) or v2 (adds the measurement-validity principle),
+    # selected by AGENTIC_MPC_PROMPT so the prompt is a controlled, swappable experiment knob.
+    prompt_version = os.environ.get("AGENTIC_MPC_PROMPT", "v1").lower()
+
     agent = None
     agent_log: list[dict] = []
     if agentic:
@@ -92,7 +102,8 @@ def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "
             # for base_url + api_key, but keep --model and --seed as the per-run overrides.
             cfg = replace(LLM_CONFIG, model=model, seed=seed)
             agent = SupervisoryAgent(plant, mpc, safety=BoxSafetyEnvelope(), rto=rto, rto_loop=loop,
-                                     config=cfg, system_prompt=SYSTEM_PROMPT_RTO)
+                                     config=cfg,
+                                     system_prompt=prompt_for(prompt_version, with_rto=True))
         elif supervisor == "rule-based-naive":
             agent = RuleBasedSupervisorNaive(plant, mpc, safety=BoxSafetyEnvelope(), rto=rto,
                                              rto_loop=loop)
@@ -116,21 +127,24 @@ def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "
                               "actions": out["actions"]})
 
     result = loop.run(t_end, on_step=on_step)
-    out_dir = output_dir_for(scenario_id, model, rto_variant, supervisor, agentic)
+    out_dir = output_dir_for(scenario_id, model, rto_variant, supervisor, agentic, prompt_version)
     out_dir.mkdir(parents=True, exist_ok=True)
     _plot(result, scenario, out_dir, scenario_id)
-    summary = _summary(result, scenario, agent_log, model, rto_variant, agentic, supervisor, seed)
+    summary = _summary(result, scenario, agent_log, model, rto_variant, agentic, supervisor, seed,
+                       prompt_version)
     (out_dir / "log.json").write_text(json.dumps(summary, indent=2, default=_json_default))
     _print_summary(summary, out_dir)
     return summary
 
 
-def _summary(result, scenario, agent_log, model, rto_variant, agentic, supervisor, seed) -> dict:
+def _summary(result, scenario, agent_log, model, rto_variant, agentic, supervisor, seed,
+             prompt_version="v1") -> dict:
     h = result["history"]
     return {
         "scenario": scenario.describe(),
         "config": {"model": model, "rto_variant": rto_variant, "agentic": agentic,
-                   "supervisor": (supervisor if agentic else "none"), "seed": seed},
+                   "supervisor": (supervisor if agentic else "none"), "seed": seed,
+                   "prompt": (prompt_version if (agentic and supervisor == "llm") else "n/a")},
         "rto_handoffs": result["handoffs"],
         "agent_decisions": agent_log,
         "final_realized": {"xD": float(h["xD"][-1]), "xB": float(h["xB"][-1])},

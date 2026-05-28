@@ -78,6 +78,68 @@ Diagnose the regime before acting:
 Prefer trigger_rto_run for economic re-optimization; reserve update_mpc_target for direct
 supervisory setpoint nudges. Always give a concrete plain-string rationale."""
 
+
+# ======================================================================================
+# v2 prompt variant -- adds a GENERAL measurement-validity principle. v1 (above) is left
+# byte-identical so prior results stay comparable; v2 is built by transforming v1 (so the
+# ONLY differences are the intended additions) and is selected via AGENTIC_MPC_PROMPT=v2.
+# ======================================================================================
+_V2_MEASUREMENT_STEP = (
+    "  2. Validate the measurements before trusting them. Check each reading is physically\n"
+    "     plausible (a composition must lie in [0, 1]) and mutually consistent: a genuine\n"
+    "     composition change is driven by the manipulated variables and shows in the coupled\n"
+    "     output, so a reading that jumps while R, S and the other composition barely move --\n"
+    "     or that leaves the physical [0, 1] range -- is more likely a sensor/analyzer fault\n"
+    "     than a real process change. A reading that jumps and then returns to its prior\n"
+    "     level without any corresponding change in R or S is likewise a transient sensor\n"
+    "     artifact, not a real excursion. Treat an implausible or internally-inconsistent\n"
+    "     reading as a SUSPECTED INSTRUMENT FAULT rather than a process event.\n"
+)
+_V2_GUIDANCE_BULLET = (
+    "  - Rule out an instrument fault before acting on an anomaly. If a reading is physically\n"
+    "    implausible or contradicts the manipulated variables and the other composition, do NOT\n"
+    "    command setpoint changes or trigger an optimization on it -- a controller or optimizer\n"
+    "    that trusts a bad sensor will drive the TRUE process the wrong way. Flag the suspected\n"
+    "    fault and prefer to hold.\n"
+)
+_V2_SENSOR_REGIME_BULLET = (
+    "  * sensor / analyzer fault (a reading is physically implausible or inconsistent with R, S\n"
+    "    and the other composition -- e.g. one composition jumps while the inputs barely move):\n"
+    "    do NOT trigger_rto_run or retarget on it; the RTO would optimize against corrupted\n"
+    "    data. Report it as a suspected instrument fault and hold.\n"
+)
+
+SYSTEM_PROMPT_V2 = (
+    SYSTEM_PROMPT
+    .replace(
+        "  1. Observe the process state (get_process_state) and the MPC health (get_mpc_health).\n"
+        "  2. Diagnose any issue:",
+        "  1. Observe the process state (get_process_state) and the MPC health (get_mpc_health).\n"
+        + _V2_MEASUREMENT_STEP + "  3. Diagnose any issue:")
+    .replace("  3. Take a supervisory action ONLY when warranted",
+             "  4. Take a supervisory action ONLY when warranted")
+    .replace("Guidance:\n  - The MPC innovation statistics",
+             "Guidance:\n" + _V2_GUIDANCE_BULLET + "  - The MPC innovation statistics")
+)
+# guard against a silent no-match leaving v2 == v1 (which would invalidate the experiment)
+assert SYSTEM_PROMPT_V2 != SYSTEM_PROMPT and "[0, 1]" in SYSTEM_PROMPT_V2, "v2 transform failed"
+
+# reuse the EXISTING RTO addendum verbatim (sliced from the frozen v1 RTO prompt), with the
+# sensor-fault regime bullet inserted into the regime list.
+_RTO_ADDENDUM = SYSTEM_PROMPT_RTO[len(SYSTEM_PROMPT):]
+SYSTEM_PROMPT_RTO_V2 = SYSTEM_PROMPT_V2 + _RTO_ADDENDUM.replace(
+    "Diagnose the regime before acting:\n",
+    "Diagnose the regime before acting:\n" + _V2_SENSOR_REGIME_BULLET)
+
+
+def prompt_for(version: str = "v1", with_rto: bool = False) -> str:
+    """Select the system prompt by version ('v1' default, 'v2') and RTO presence."""
+    v2 = (version or "v1").lower() == "v2"
+    if with_rto:
+        return SYSTEM_PROMPT_RTO_V2 if v2 else SYSTEM_PROMPT_RTO
+    return SYSTEM_PROMPT_V2 if v2 else SYSTEM_PROMPT
+
+
 _THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
 
 
