@@ -46,26 +46,27 @@ def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: s
 
       LLM agentic     -> phase1_5/<model>/agentic_<rto>/<scenario>
       LLM agentic v2  -> phase1_5/<model>_promptv2/agentic_<rto>/<scenario>
-      replicate       -> .../<kind>_<rto>/<scenario>/seed<N>   (agentic OR baseline; seed != 42)
+      replicate       -> .../<scenario>/seed<N>   (any supervisor; seed != 42)
       baseline (none) -> phase1_5/<model>/baseline_<rto>/<scenario>
       rule-based      -> phase1_5/rule_based_<naive|smart>_<rto>/<scenario>   (no model -- no LLM)
     """
     rt = rto_variant.replace(" ", "").lower()
     if supervisor in ("rule-based-naive", "rule-based-smart"):
         variant = supervisor.replace("rule-based-", "")
-        return _OUT_ROOT / f"rule_based_{variant}_{rt}" / scenario_id
-    kind = "agentic" if (agentic and supervisor == "llm") else "baseline"
-    # sanitize the model name for the path: qwen3:30b -> qwen3_30b, claude-sonnet-4-6 ->
-    # claude_sonnet_4_6 (so an Anthropic-backed run lands in its own dir, not qwen3's).
-    model_tag = model.replace(":", "_").replace("-", "_").replace(".", "_")
-    # the v2 prompt only differs for the LLM agent; suffix that branch so its outputs land in
-    # their own dir (claude_sonnet_4_6_promptv2/...) and don't overwrite the v1 prompt's runs.
-    if kind == "agentic" and (prompt_version or "v1").lower() == "v2":
-        model_tag += "_promptv2"
-    out = _OUT_ROOT / model_tag / f"{kind}_{rt}" / scenario_id
+        out = _OUT_ROOT / f"rule_based_{variant}_{rt}" / scenario_id
+    else:
+        kind = "agentic" if (agentic and supervisor == "llm") else "baseline"
+        # sanitize the model name for the path: qwen3:30b -> qwen3_30b, claude-sonnet-4-6 ->
+        # claude_sonnet_4_6 (so an Anthropic-backed run lands in its own dir, not qwen3's).
+        model_tag = model.replace(":", "_").replace("-", "_").replace(".", "_")
+        # the v2 prompt only differs for the LLM agent; suffix that branch so its outputs land in
+        # their own dir (claude_sonnet_4_6_promptv2/...) and don't overwrite the v1 prompt's runs.
+        if kind == "agentic" and (prompt_version or "v1").lower() == "v2":
+            model_tag += "_promptv2"
+        out = _OUT_ROOT / model_tag / f"{kind}_{rt}" / scenario_id
     # replicate sweeps: a non-default seed nests under seed<N> so the runs coexist instead of
-    # overwriting -- applied to BOTH agentic and baseline so a seed-matched agentic/baseline pair
-    # lands at .../agentic_<rto>/<scen>/seed<N> and .../baseline_<rto>/<scen>/seed<N>. The
+    # overwriting -- applied to EVERY supervisor (agentic / baseline / rule-based) so a seed-matched
+    # set lands at .../<config>/<scen>/seed<N>. The
     # default-seed (42) layout is left untouched so prior runs + docs still resolve.
     if seed != _DEFAULT_SEED:
         out = out / f"seed{seed}"

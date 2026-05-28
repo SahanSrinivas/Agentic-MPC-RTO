@@ -109,3 +109,8 @@ def test_replicate_seeds_get_their_own_subdir_without_disturbing_default():
     # default-seed baseline stays flat (prior layout preserved).
     b42 = output_dir_for("R3", "claude-sonnet-4-6", "ma", "llm", False, "v1", 42)
     assert b42.parts[-3:] == ("claude_sonnet_4_6", "baseline_ma", "R3")
+    # rule-based supervisors are seed-separated too (no LLM/model in the path).
+    rn1 = output_dir_for("R2", "qwen3:4b", "ma", "rule-based-naive", True, "v1", 1)
+    assert rn1.parts[-3:] == ("rule_based_naive_ma", "R2", "seed1")
+    rn42 = output_dir_for("R2", "qwen3:4b", "ma", "rule-based-smart", True, "v1", 42)
+    assert rn42.parts[-2:] == ("rule_based_smart_ma", "R2")
