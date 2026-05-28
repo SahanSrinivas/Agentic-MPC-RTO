@@ -37,12 +37,16 @@ warnings.filterwarnings("ignore")
 _OUT_ROOT = pathlib.Path(__file__).parent / "outputs" / "phase1_5"
 
 
+_DEFAULT_SEED = 42
+
+
 def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: str,
-                   agentic: bool, prompt_version: str = "v1") -> pathlib.Path:
+                   agentic: bool, prompt_version: str = "v1", seed: int = _DEFAULT_SEED) -> pathlib.Path:
     """Config-aware output dir so configurations don't overwrite each other:
 
       LLM agentic     -> phase1_5/<model>/agentic_<rto>/<scenario>
       LLM agentic v2  -> phase1_5/<model>_promptv2/agentic_<rto>/<scenario>
+      LLM replicate   -> .../agentic_<rto>/<scenario>/seed<N>   (only when seed != default 42)
       baseline (none) -> phase1_5/<model>/baseline_<rto>/<scenario>
       rule-based      -> phase1_5/rule_based_<naive|smart>_<rto>/<scenario>   (no model -- no LLM)
     """
@@ -58,7 +62,12 @@ def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: s
     # their own dir (claude_sonnet_4_6_promptv2/...) and don't overwrite the v1 prompt's runs.
     if kind == "agentic" and (prompt_version or "v1").lower() == "v2":
         model_tag += "_promptv2"
-    return _OUT_ROOT / model_tag / f"{kind}_{rt}" / scenario_id
+    out = _OUT_ROOT / model_tag / f"{kind}_{rt}" / scenario_id
+    # replicate sweeps: a non-default seed nests under seed<N> so the LLM runs coexist instead of
+    # overwriting. The default-seed (42) layout is left untouched so prior runs + docs still resolve.
+    if kind == "agentic" and seed != _DEFAULT_SEED:
+        out = out / f"seed{seed}"
+    return out
 
 
 def _make_rto(variant: str, plant: WoodBerryPlant, econ: WoodBerryEconomics, seed: int):
@@ -127,7 +136,8 @@ def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "
                               "actions": out["actions"]})
 
     result = loop.run(t_end, on_step=on_step)
-    out_dir = output_dir_for(scenario_id, model, rto_variant, supervisor, agentic, prompt_version)
+    out_dir = output_dir_for(scenario_id, model, rto_variant, supervisor, agentic, prompt_version,
+                             seed)
     out_dir.mkdir(parents=True, exist_ok=True)
     _plot(result, scenario, out_dir, scenario_id)
     summary = _summary(result, scenario, agent_log, model, rto_variant, agentic, supervisor, seed,

@@ -91,3 +91,18 @@ def test_output_dir_routes_v2_to_its_own_promptv2_dir():
     # the v2 suffix is LLM-agentic-only: a baseline run never gets the promptv2 dir.
     base = output_dir_for("R6", "claude-sonnet-4-6", "ma", "llm", False, "v2")
     assert "promptv2" not in str(base)
+
+
+def test_replicate_seeds_get_their_own_subdir_without_disturbing_default():
+    from experiments._phase1_5_runner import output_dir_for
+    # default seed (42) keeps the flat layout so prior runs + docs still resolve.
+    d42 = output_dir_for("R3", "claude-sonnet-4-6", "ma", "llm", True, "v2", 42)
+    assert d42.parts[-3:] == ("claude_sonnet_4_6_promptv2", "agentic_ma", "R3")
+    # non-default seeds nest under seed<N> so the three replicates coexist instead of overwriting.
+    s1 = output_dir_for("R3", "claude-sonnet-4-6", "ma", "llm", True, "v2", 1)
+    s2 = output_dir_for("R3", "claude-sonnet-4-6", "ma", "llm", True, "v2", 2)
+    assert s1.parts[-4:] == ("claude_sonnet_4_6_promptv2", "agentic_ma", "R3", "seed1")
+    assert s2.name == "seed2" and s1 != s2
+    # seed nesting is LLM-agentic-only -- a baseline replicate is not split by seed.
+    b1 = output_dir_for("R3", "claude-sonnet-4-6", "ma", "llm", False, "v1", 1)
+    assert "seed1" not in str(b1)
