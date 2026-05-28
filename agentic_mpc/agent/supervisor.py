@@ -10,6 +10,7 @@ end-to-end experiment.
 from __future__ import annotations
 
 import json
+import os
 import re
 from typing import Any
 
@@ -112,7 +113,9 @@ class SupervisoryAgent:
         for iteration in range(max_iterations):
             create_kwargs = dict(model=self.config.model, messages=messages, tools=self.tools,
                                  tool_choice="auto", temperature=self.config.temperature)
-            if self.config.seed is not None:        # reproducible sampling when a seed is set
+            # seed: Ollama supports it; Anthropic's OpenAI-compat endpoint may not, so skip it there.
+            backend = os.environ.get("AGENTIC_MPC_BACKEND", "ollama").lower()
+            if self.config.seed is not None and backend != "anthropic":
                 create_kwargs["seed"] = self.config.seed
             response = self.client.chat.completions.create(**create_kwargs)
             msg = response.choices[0].message

@@ -13,3 +13,6 @@ dist/
 venv*/
 .vscode/
 .idea/
+
+# Secrets / local backend selection -- never commit the real key
+.env

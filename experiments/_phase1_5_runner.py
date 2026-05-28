@@ -20,9 +20,11 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+from dataclasses import replace
+
 from agentic_mpc.agent import (SYSTEM_PROMPT_RTO, RuleBasedSupervisorNaive, RuleBasedSupervisorSmart,
                                SupervisoryAgent)
-from agentic_mpc.agent.llm_config import LLMConfig
+from agentic_mpc.agent.llm_config import LLM_CONFIG
 from agentic_mpc.controllers import ClassicalMPC
 from agentic_mpc.plants import WoodBerryPlant
 from agentic_mpc.rto import (MAGaussianProcess, ModifierAdaptation, RTOMPCLoop, WoodBerryEconomics,
@@ -47,7 +49,10 @@ def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: s
         variant = supervisor.replace("rule-based-", "")
         return _OUT_ROOT / f"rule_based_{variant}_{rt}" / scenario_id
     kind = "agentic" if (agentic and supervisor == "llm") else "baseline"
-    return _OUT_ROOT / model.replace(":", "_") / f"{kind}_{rt}" / scenario_id
+    # sanitize the model name for the path: qwen3:30b -> qwen3_30b, claude-sonnet-4-6 ->
+    # claude_sonnet_4_6 (so an Anthropic-backed run lands in its own dir, not qwen3's).
+    model_tag = model.replace(":", "_").replace("-", "_").replace(".", "_")
+    return _OUT_ROOT / model_tag / f"{kind}_{rt}" / scenario_id
 
 
 def _make_rto(variant: str, plant: WoodBerryPlant, econ: WoodBerryEconomics, seed: int):
@@ -83,9 +88,11 @@ def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "
     agent_log: list[dict] = []
     if agentic:
         if supervisor == "llm":
+            # use the env-resolved backend (Ollama default / Anthropic if AGENTIC_MPC_BACKEND set)
+            # for base_url + api_key, but keep --model and --seed as the per-run overrides.
+            cfg = replace(LLM_CONFIG, model=model, seed=seed)
             agent = SupervisoryAgent(plant, mpc, safety=BoxSafetyEnvelope(), rto=rto, rto_loop=loop,
-                                     config=LLMConfig(model=model, seed=seed),
-                                     system_prompt=SYSTEM_PROMPT_RTO)
+                                     config=cfg, system_prompt=SYSTEM_PROMPT_RTO)
         elif supervisor == "rule-based-naive":
             agent = RuleBasedSupervisorNaive(plant, mpc, safety=BoxSafetyEnvelope(), rto=rto,
                                              rto_loop=loop)
