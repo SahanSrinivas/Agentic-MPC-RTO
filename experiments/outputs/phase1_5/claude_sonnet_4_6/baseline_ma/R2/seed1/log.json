@@ -1,0 +1,175 @@
+{
+  "scenario": {
+    "scenario_id": "R2",
+    "regime": "model-mismatch (abrupt)",
+    "mechanism": "equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)",
+    "expected_supervisory_response": "MA/MA-GP correct the load gap; the gain change alone is sub-threshold at the optimum"
+  },
+  "config": {
+    "model": "claude-sonnet-4-6",
+    "rto_variant": "ma",
+    "agentic": false,
+    "supervisor": "none",
+    "seed": 1,
+    "prompt": "n/a"
+  },
+  "rto_handoffs": [
+    {
+      "t": 0.0,
+      "setpoints": {
+        "xD": 0.966,
+        "xB": 0.005
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.966,
+          "xB": 0.005
+        },
+        "realized": {
+          "xD": 0.9659999999999996,
+          "xB": 0.0049999999999992455
+        },
+        "inputs": {
+          "R": 1.9509418999838162,
+          "S": 1.7103204402006797
+        },
+        "objective": 14.132981321998502,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 9.65639721783873e-05,
+        "type": "MA",
+        "iteration": 1
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 60.0,
+      "setpoints": {
+        "xD": 0.966,
+        "xB": 0.008
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.966,
+          "xB": 0.008
+        },
+        "realized": {
+          "xD": 0.966000000000002,
+          "xB": 0.008000000000001534
+        },
+        "inputs": {
+          "R": 1.9504830878782975,
+          "S": 1.7100097103091114
+        },
+        "objective": 14.12348536693836,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.000176321400655155,
+        "type": "MA",
+        "iteration": 2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 120.0,
+      "setpoints": {
+        "xD": 0.9650870047246967,
+        "xB": 0.006931126265881915
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9650870047246967,
+          "xB": 0.006931126265881915
+        },
+        "realized": {
+          "xD": 0.9494428657483298,
+          "xB": 0.00693112626588241
+        },
+        "inputs": {
+          "R": 1.9505032335752868,
+          "S": 1.7100716605840727
+        },
+        "objective": 14.128227012122874,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.00031753880243812205,
+        "type": "MA",
+        "iteration": 3
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 180.0,
+      "setpoints": {
+        "xD": 0.964338561713524,
+        "xB": 0.006239554497147953
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.964338561713524,
+          "xB": 0.006239554497147953
+        },
+        "realized": {
+          "xD": 0.9487094319022678,
+          "xB": 0.00623955449714912
+        },
+        "inputs": {
+          "R": 1.950491507665045,
+          "S": 1.7101033193861932
+        },
+        "objective": 14.130091223731128,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0011243054392124918,
+        "type": "MA",
+        "iteration": 4
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 240.0,
+      "setpoints": {
+        "xD": 0.9635831005118756,
+        "xB": 0.005709518811959205
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9635831005118756,
+          "xB": 0.005709518811959205
+        },
+        "realized": {
+          "xD": 0.9480020123680643,
+          "xB": 0.005709518811957554
+        },
+        "inputs": {
+          "R": 1.950453975112351,
+          "S": 1.7101178720066783
+        },
+        "objective": 14.130858896766323,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0014852492534291883,
+        "type": "MA",
+        "iteration": 5
+      },
+      "settled_since_prev": false
+    }
+  ],
+  "agent_decisions": [],
+  "final_realized": {
+    "xD": 0.9614568261638028,
+    "xB": 0.005995628624221641
+  },
+  "final_setpoint": {
+    "xD": 0.9635831005118756,
+    "xB": 0.005709518811959205
+  },
+  "n_rto_commands": 5,
+  "n_agent_decisions": 0,
+  "n_agent_actions": 0
+}

@@ -103,6 +103,9 @@ def test_replicate_seeds_get_their_own_subdir_without_disturbing_default():
     s2 = output_dir_for("R3", "claude-sonnet-4-6", "ma", "llm", True, "v2", 2)
     assert s1.parts[-4:] == ("claude_sonnet_4_6_promptv2", "agentic_ma", "R3", "seed1")
     assert s2.name == "seed2" and s1 != s2
-    # seed nesting is LLM-agentic-only -- a baseline replicate is not split by seed.
+    # baselines are seed-separated too, so a seed-matched agentic/baseline pair coexists.
     b1 = output_dir_for("R3", "claude-sonnet-4-6", "ma", "llm", False, "v1", 1)
-    assert "seed1" not in str(b1)
+    assert b1.parts[-4:] == ("claude_sonnet_4_6", "baseline_ma", "R3", "seed1")
+    # default-seed baseline stays flat (prior layout preserved).
+    b42 = output_dir_for("R3", "claude-sonnet-4-6", "ma", "llm", False, "v1", 42)
+    assert b42.parts[-3:] == ("claude_sonnet_4_6", "baseline_ma", "R3")

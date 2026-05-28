@@ -1,0 +1,175 @@
+{
+  "scenario": {
+    "scenario_id": "R7",
+    "regime": "mpc-tracking degradation",
+    "mechanism": "step xD output (load) disturbance -0.03 the MPC must reject; offset + ISE rise",
+    "expected_supervisory_response": "agent sees biased innovation / rising ISE; MA/MA-GP or a target nudge restores it"
+  },
+  "config": {
+    "model": "claude-sonnet-4-6",
+    "rto_variant": "ma",
+    "agentic": false,
+    "supervisor": "none",
+    "seed": 1,
+    "prompt": "n/a"
+  },
+  "rto_handoffs": [
+    {
+      "t": 0.0,
+      "setpoints": {
+        "xD": 0.966,
+        "xB": 0.005
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.966,
+          "xB": 0.005
+        },
+        "realized": {
+          "xD": 0.9659999999999996,
+          "xB": 0.0049999999999992455
+        },
+        "inputs": {
+          "R": 1.9509418999838162,
+          "S": 1.7103204402006797
+        },
+        "objective": 14.132981321998502,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 9.65639721783873e-05,
+        "type": "MA",
+        "iteration": 1
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 60.0,
+      "setpoints": {
+        "xD": 0.966,
+        "xB": 0.008
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.966,
+          "xB": 0.008
+        },
+        "realized": {
+          "xD": 0.966000000000002,
+          "xB": 0.008000000000001534
+        },
+        "inputs": {
+          "R": 1.9504830878782975,
+          "S": 1.7100097103091114
+        },
+        "objective": 14.12348536693836,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.000176321400655155,
+        "type": "MA",
+        "iteration": 2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 120.0,
+      "setpoints": {
+        "xD": 0.9653200467941085,
+        "xB": 0.006493579259888583
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9653200467941085,
+          "xB": 0.006493579259888583
+        },
+        "realized": {
+          "xD": 0.9353200467941107,
+          "xB": 0.006493579259890332
+        },
+        "inputs": {
+          "R": 1.9506067345832159,
+          "S": 1.7101294262365636
+        },
+        "objective": 14.122842907766126,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.00646566197231202,
+        "type": "MA",
+        "iteration": 3
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 180.0,
+      "setpoints": {
+        "xD": 0.964717408885146,
+        "xB": 0.005571247665161966
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.964717408885146,
+          "xB": 0.005571247665161966
+        },
+        "realized": {
+          "xD": 0.9347174088851457,
+          "xB": 0.005571247665160968
+        },
+        "inputs": {
+          "R": 1.950653189444087,
+          "S": 1.7101927733332893
+        },
+        "objective": 14.12396886891059,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.007857230145468463,
+        "type": "MA",
+        "iteration": 4
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 240.0,
+      "setpoints": {
+        "xD": 0.9640705646460549,
+        "xB": 0.004911759851572042
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9640705646460549,
+          "xB": 0.004911759851572042
+        },
+        "realized": {
+          "xD": 0.9340705646460563,
+          "xB": 0.004911759851573612
+        },
+        "inputs": {
+          "R": 1.950652506011804,
+          "S": 1.7102265350425945
+        },
+        "objective": 14.123429455732216,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0090287986124018,
+        "type": "MA",
+        "iteration": 5
+      },
+      "settled_since_prev": false
+    }
+  ],
+  "agent_decisions": [],
+  "final_realized": {
+    "xD": 0.9602819229566234,
+    "xB": 0.005289752947301508
+  },
+  "final_setpoint": {
+    "xD": 0.9640705646460549,
+    "xB": 0.004911759851572042
+  },
+  "n_rto_commands": 5,
+  "n_agent_decisions": 0,
+  "n_agent_actions": 0
+}

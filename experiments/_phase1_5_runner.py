@@ -46,7 +46,7 @@ def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: s
 
       LLM agentic     -> phase1_5/<model>/agentic_<rto>/<scenario>
       LLM agentic v2  -> phase1_5/<model>_promptv2/agentic_<rto>/<scenario>
-      LLM replicate   -> .../agentic_<rto>/<scenario>/seed<N>   (only when seed != default 42)
+      replicate       -> .../<kind>_<rto>/<scenario>/seed<N>   (agentic OR baseline; seed != 42)
       baseline (none) -> phase1_5/<model>/baseline_<rto>/<scenario>
       rule-based      -> phase1_5/rule_based_<naive|smart>_<rto>/<scenario>   (no model -- no LLM)
     """
@@ -63,9 +63,11 @@ def output_dir_for(scenario_id: str, model: str, rto_variant: str, supervisor: s
     if kind == "agentic" and (prompt_version or "v1").lower() == "v2":
         model_tag += "_promptv2"
     out = _OUT_ROOT / model_tag / f"{kind}_{rt}" / scenario_id
-    # replicate sweeps: a non-default seed nests under seed<N> so the LLM runs coexist instead of
-    # overwriting. The default-seed (42) layout is left untouched so prior runs + docs still resolve.
-    if kind == "agentic" and seed != _DEFAULT_SEED:
+    # replicate sweeps: a non-default seed nests under seed<N> so the runs coexist instead of
+    # overwriting -- applied to BOTH agentic and baseline so a seed-matched agentic/baseline pair
+    # lands at .../agentic_<rto>/<scen>/seed<N> and .../baseline_<rto>/<scen>/seed<N>. The
+    # default-seed (42) layout is left untouched so prior runs + docs still resolve.
+    if seed != _DEFAULT_SEED:
         out = out / f"seed{seed}"
     return out
 
@@ -143,6 +145,11 @@ def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "
     summary = _summary(result, scenario, agent_log, model, rto_variant, agentic, supervisor, seed,
                        prompt_version)
     (out_dir / "log.json").write_text(json.dumps(summary, indent=2, default=_json_default))
+    # persist the full per-timestep trajectory (log.json only keeps finals) so downstream metrics
+    # -- e.g. integrated economic regret -- can be computed/audited offline without a re-run.
+    h = result["history"]
+    traj = {k: h[k] for k in ("t", "R", "S", "xD", "xB", "xD_sp", "xB_sp", "settled")}
+    (out_dir / "trajectory.json").write_text(json.dumps(traj, default=_json_default))
     _print_summary(summary, out_dir)
     return summary
 

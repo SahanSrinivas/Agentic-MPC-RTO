@@ -1,0 +1,1434 @@
+{
+  "scenario": {
+    "scenario_id": "R2",
+    "regime": "model-mismatch (abrupt)",
+    "mechanism": "equipment fault: step -10% R->xD gain (the fault) + xD output bias -0.015 (the load term that carries the RTO-detectable signal)",
+    "expected_supervisory_response": "MA/MA-GP correct the load gap; the gain change alone is sub-threshold at the optimum"
+  },
+  "config": {
+    "model": "claude-sonnet-4-6",
+    "rto_variant": "ma",
+    "agentic": true,
+    "supervisor": "llm",
+    "seed": 3,
+    "prompt": "v2"
+  },
+  "rto_handoffs": [
+    {
+      "t": 0.0,
+      "setpoints": {
+        "xD": 0.966,
+        "xB": 0.005
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.966,
+          "xB": 0.005
+        },
+        "realized": {
+          "xD": 0.9659999999999996,
+          "xB": 0.0049999999999992455
+        },
+        "inputs": {
+          "R": 1.9509418999838162,
+          "S": 1.7103204402006797
+        },
+        "objective": 14.132981321998502,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 1.7860152455639877e-05,
+        "type": "MA",
+        "iteration": 1
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 60.0,
+      "setpoints": {
+        "xD": 0.966,
+        "xB": 0.008
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.966,
+          "xB": 0.008
+        },
+        "realized": {
+          "xD": 0.966000000000002,
+          "xB": 0.008000000000001534
+        },
+        "inputs": {
+          "R": 1.9504830878782975,
+          "S": 1.7100097103091114
+        },
+        "objective": 14.12348536693836,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.00012057821972355498,
+        "type": "MA",
+        "iteration": 2
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 120.0,
+      "setpoints": {
+        "xD": 0.9651234410871515,
+        "xB": 0.0067918595180955854
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9651234410871515,
+          "xB": 0.0067918595180955854
+        },
+        "realized": {
+          "xD": 0.9494447178017124,
+          "xB": 0.006791859518094174
+        },
+        "inputs": {
+          "R": 1.950530252566748,
+          "S": 1.7100880313104352
+        },
+        "objective": 14.128713448141525,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0020182793266201315,
+        "type": "MA",
+        "iteration": 3
+      },
+      "settled_since_prev": false,
+      "source": "agent"
+    },
+    {
+      "t": 120.0,
+      "setpoints": {
+        "xD": 0.9643926385455261,
+        "xB": 0.006024056878891132
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9643926385455261,
+          "xB": 0.006024056878891132
+        },
+        "realized": {
+          "xD": 0.9487104568304549,
+          "xB": 0.0060240568788895565
+        },
+        "inputs": {
+          "R": 1.9505329544648986,
+          "S": 1.7101285279685279
+        },
+        "objective": 14.130575631310126,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0007432764330985719,
+        "type": "MA",
+        "iteration": 4
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 180.0,
+      "setpoints": {
+        "xD": 0.9636441382417651,
+        "xB": 0.005448522896459825
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9636441382417651,
+          "xB": 0.005448522896459825
+        },
+        "realized": {
+          "xD": 0.9479996927416149,
+          "xB": 0.005448522896458048
+        },
+        "inputs": {
+          "R": 1.950503473046991,
+          "S": 1.7101481649079218
+        },
+        "objective": 14.131142530518183,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0014360611136758905,
+        "type": "MA",
+        "iteration": 5
+      },
+      "settled_since_prev": false,
+      "source": "agent"
+    },
+    {
+      "t": 180.0,
+      "setpoints": {
+        "xD": 0.9628403779743204,
+        "xB": 0.004982206951377913
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9628403779743204,
+          "xB": 0.004982206951377913
+        },
+        "realized": {
+          "xD": 0.9472661530569357,
+          "xB": 0.004982206951379071
+        },
+        "inputs": {
+          "R": 1.950448613216708,
+          "S": 1.7101535381587059
+        },
+        "objective": 14.1309405288369,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.002289256722869837,
+        "type": "MA",
+        "iteration": 6
+      },
+      "settled_since_prev": false
+    },
+    {
+      "t": 240.0,
+      "setpoints": {
+        "xD": 0.9619726523050026,
+        "xB": 0.004591032783247561
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.9619726523050026,
+          "xB": 0.004591032783247561
+        },
+        "realized": {
+          "xD": 0.946496210834333,
+          "xB": 0.004591032783249167
+        },
+        "inputs": {
+          "R": 1.9503722198989615,
+          "S": 1.7101477122963864
+        },
+        "objective": 14.130205393572712,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.002618863619556322,
+        "type": "MA",
+        "iteration": 7
+      },
+      "settled_since_prev": false,
+      "source": "agent"
+    },
+    {
+      "t": 240.0,
+      "setpoints": {
+        "xD": 0.961038287836069,
+        "xB": 0.004256837091411125
+      },
+      "rto_type": "MA",
+      "rto_status": {
+        "setpoints": {
+          "xD": 0.961038287836069,
+          "xB": 0.004256837091411125
+        },
+        "realized": {
+          "xD": 0.9456841742203551,
+          "xB": 0.004256837091410244
+        },
+        "inputs": {
+          "R": 1.950276651262276,
+          "S": 1.7101324258370934
+        },
+        "objective": 14.12907678721088,
+        "converged": true,
+        "active_constraints": [],
+        "model_plant_gap": 0.0029941859640416624,
+        "type": "MA",
+        "iteration": 8
+      },
+      "settled_since_prev": false
+    }
+  ],
+  "agent_decisions": [
+    {
+      "t": 60.0,
+      "final": "Here is my complete assessment for **t = 60 min**:\n\n---\n\n## \ud83d\udd0d Supervisory Cycle Assessment \u2014 t = 60 min\n\n### 1. Process State & Measurement Validation \u2705\n\n| Variable | Current | Nominal | Status |\n|---|---|---|---|\n| xD | 0.9661 | ~0.960 | \u2705 Physically plausible, on-target |\n| xB | 0.00509 | ~0.005 | \u2705 Physically plausible, on-target |\n| R | 1.9509 lb/min | ~1.951 | \u2705 Stable, consistent |\n| S | 1.7103 lb/min | ~1.710 | \u2705 Stable, consistent |\n\n**Measurement validation:** Both compositions are well within [0, 1], tightly clustered around their targets across the full 30-sample history window (xD \u2208 [0.9656, 0.9665], xB \u2208 [0.00448, 0.00544]). The manipulated variables R and S are essentially frozen at their steady-state values with only micro-level noise. There is **no evidence of sensor fault** \u2014 the readings are physically plausible and mutually consistent with the inputs.\n\n---\n\n### 2. MPC Health \u2705\n\n| Metric | Value | Reference | Status |\n|---|---|---|---|\n| Innovation mean xD | \u22122.7 \u00d7 10\u207b\u2075 | ~1 \u00d7 10\u207b\u2075 | \u2705 Near-nominal (2\u20133\u00d7 baseline, not alarming) |\n| Innovation mean xB | \u22121.2 \u00d7 10\u207b\u2075 | ~1 \u00d7 10\u207b\u2075 | \u2705 Essentially nominal |\n| Innovation std xD | 3.1 \u00d7 10\u207b\u2074 | \u2014 | \u2705 Small, consistent with measurement noise |\n| Innovation std xB | 2.6 \u00d7 10\u207b\u2074 | \u2014 | \u2705 Small, consistent with measurement noise |\n| Recent ISE | 7.5 \u00d7 10\u207b\u2077 | ~1 \u00d7 10\u207b\u2076 | \u2705 **Below** nominal reference \u2014 excellent |\n| Active constraints | None | \u2014 | \u2705 Unconstrained |\n\nNo sustained bias, no growing mismatch, no constraint pressure. The MPC is tracking cleanly.\n\n---\n\n### 3. Economic Context \u2705\n\n| Parameter | Value | Notes |\n|---|---|---|\n| Distillate price p_D | 29.3513 | Nominal |\n| Steam cost c_S | 0.1306 | Nominal |\n| Bottoms price p_B | 0.30 | Nominal |\n| RTO Objective | 14.133 | Stable |\n| Model-plant economic gap | 1.79 \u00d7 10\u207b\u2075 | Negligible |\n| RTO setpoints | xD = 0.966, xB = 0.005 | Consistent with current operation |\n\n**No economic shift detected.** All prices/costs appear nominal. The model-plant economic gap is essentially zero (1.79 \u00d7 10\u207b\u2075), meaning the RTO's economic model is well-aligned with the plant.\n\n---\n\n### 4. RTO Status \u2705\n\n| Item | Value | Assessment |\n|---|---|---|\n| RTO variant | MA (Modifier Adaptation) | Adaptive \u2014 appropriate |\n| Last run | t = 0 min (60 min ago) | Single run at startup |\n| Solve status | Optimal, converged | \u2705 |\n| Commanded setpoints | xD = 0.966, xB = 0.005 | Consistent with current targets |\n| Plant settled? | `false` | \u26a0\ufe0f Flag \u2014 see below |\n\nThe `settled_since_command = false` flag is noted, but given that the process measurements and ISE are both extremely stable and on-target, this likely reflects a bookkeeping threshold rather than a genuine unsettled transient. The actual process behavior shows no evidence of ongoing dynamics.\n\n---\n\n### 5. Decision: **No Action Required** \u2705\n\nAll diagnostic signals are healthy:\n\n- \u2705 **No instrument fault** \u2014 readings are plausible and consistent with inputs\n- \u2705 **No model-plant mismatch** \u2014 innovations are near-nominal, ISE is *below* the nominal reference\n- \u2705 **No economic shift** \u2014 prices/costs are nominal, model-plant economic gap is negligible\n- \u2705 **No constraint pressure** \u2014 MPC is unconstrained\n- \u2705 **No RTO re-optimization needed** \u2014 the MA-RTO converged optimally at t=0 and the economics have not changed; triggering a redundant re-run would add noise without benefit\n\n**The Wood-Berry column is operating in a healthy, well-regulated steady state.** The MPC is tracking xD \u2248 0.966 and xB \u2248 0.005 with near-zero error, the RTO-commanded setpoints are economically optimal under current prices, and no supervisory intervention is warranted this cycle. Continue monitoring.",
+      "iterations": 2,
+      "actions": [
+        {
+          "iteration": 0,
+          "tool": "get_process_state",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "t": 60.0,
+            "y": {
+              "xD": 0.9660914723406999,
+              "xB": 0.005090624124950909
+            },
+            "u": {
+              "R": 1.9509491158044543,
+              "S": 1.7103317369695463
+            },
+            "history": {
+              "t": [
+                31.0,
+                32.0,
+                33.0,
+                34.0,
+                35.0,
+                36.0,
+                37.0,
+                38.0,
+                39.0,
+                40.0,
+                41.0,
+                42.0,
+                43.0,
+                44.0,
+                45.0,
+                46.0,
+                47.0,
+                48.0,
+                49.0,
+                50.0,
+                51.0,
+                52.0,
+                53.0,
+                54.0,
+                55.0,
+                56.0,
+                57.0,
+                58.0,
+                59.0,
+                60.0
+              ],
+              "y": {
+                "xD": [
+                  0.9657816244931368,
+                  0.9662752980625119,
+                  0.9657976535397699,
+                  0.9661156607187102,
+                  0.9665674463745698,
+                  0.9661421089970711,
+                  0.9661955104657844,
+                  0.9658081824046274,
+                  0.9661628579007417,
+                  0.9660927337636452,
+                  0.9658639084814568,
+                  0.9657391264258123,
+                  0.9661570905042451,
+                  0.9658321196136569,
+                  0.9659612884352863,
+                  0.9657503273038033,
+                  0.9660400047364843,
+                  0.9662631659268851,
+                  0.9659534989695695,
+                  0.965978861223112,
+                  0.9658120440165071,
+                  0.9659915604698491,
+                  0.9661357753201231,
+                  0.9663365018095565,
+                  0.9656258010236071,
+                  0.9658092306913734,
+                  0.9655683528898604,
+                  0.9662723027674337,
+                  0.9660969618608892,
+                  0.9660914723406999
+                ],
+                "xB": [
+                  0.005052176482121107,
+                  0.005314571353243461,
+                  0.004918620399474284,
+                  0.0048284734804184505,
+                  0.004818914151605194,
+                  0.004647329285167111,
+                  0.005004127279769119,
+                  0.004716242024832867,
+                  0.0053238003548916925,
+                  0.00534124686603753,
+                  0.0049730764649906015,
+                  0.005044341805973079,
+                  0.004671867267076217,
+                  0.004818812691953739,
+                  0.0050984498208064884,
+                  0.0047809816413116055,
+                  0.005385187905916732,
+                  0.005121951795327489,
+                  0.0050284284224197725,
+                  0.005362554208471808,
+                  0.004953438500412845,
+                  0.005048634878996027,
+                  0.005443966788649562,
+                  0.005239313225054006,
+                  0.004907713998944706,
+                  0.0050105067321134225,
+                  0.004969569136298282,
+                  0.004484675448111888,
+                  0.0048202744357028525,
+                  0.005090624124950909
+                ]
+              },
+              "u": {
+                "R": [
+                  1.9510617799139587,
+                  1.9511153962735068,
+                  1.9507724731079072,
+                  1.9510757502814244,
+                  1.9508274242797121,
+                  1.9506862982265605,
+                  1.9508989317963565,
+                  1.9508318347014553,
+                  1.95102674009393,
+                  1.9508040187040097,
+                  1.9508974942392185,
+                  1.9509744882940039,
+                  1.9510723125991318,
+                  1.9507452924298345,
+                  1.9509589358818478,
+                  1.9508964668989561,
+                  1.9510607953378687,
+                  1.9509301043577503,
+                  1.9508163569199948,
+                  1.9509937943951203,
+                  1.9509961824962478,
+                  1.9510295332501972,
+                  1.9509353386809836,
+                  1.9509030775153908,
+                  1.9508044501904724,
+                  1.9512473199386093,
+                  1.9510260735201286,
+                  1.9511087132215583,
+                  1.9506942429015481,
+                  1.9509491158044543
+                ],
+                "S": [
+                  1.7103711252513558,
+                  1.710208250152129,
+                  1.7104153356182388,
+                  1.7102821348669344,
+                  1.7103302959981923,
+                  1.710303094928397,
+                  1.7102764765721379,
+                  1.7103804132853608,
+                  1.710180479435244,
+                  1.7103780704097262,
+                  1.7103649888868588,
+                  1.7102005318735272,
+                  1.7102497442717106,
+                  1.7102409006609725,
+                  1.7103437079027686,
+                  1.7104163669037107,
+                  1.7102050403240763,
+                  1.7104321384277377,
+                  1.7103232932035914,
+                  1.7103094106100023,
+                  1.7103738294748472,
+                  1.7102912825332106,
+                  1.7103216295251313,
+                  1.710480202013733,
+                  1.7103512884422822,
+                  1.710192112869478,
+                  1.7103320365115902,
+                  1.7103665245793314,
+                  1.7101981702077809,
+                  1.7103317369695463
+                ]
+              }
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_mpc_health",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "innovation_mean": {
+              "xD": -2.706479847048751e-05,
+              "xB": -1.1912377084966497e-05
+            },
+            "innovation_std": {
+              "xD": 0.0003122681403999879,
+              "xB": 0.00026455151946003995
+            },
+            "active_constraints": [],
+            "ise_recent": 7.537012374750883e-07,
+            "ise_recent_by_output": {
+              "xD": 4.4628743035836344e-07,
+              "xB": 3.0741380711672486e-07
+            },
+            "innovation_window_samples": 20
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_economic_context",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "prices": {
+              "F": 1.0,
+              "z_F": 0.5,
+              "p_D": 29.3513,
+              "p_pen": 2.0,
+              "p_B": 0.3,
+              "c_S": 0.1306,
+              "xB_max": 0.05,
+              "D_max": null
+            },
+            "last_rto_objective": 14.132981321998502,
+            "model_plant_gap": 1.7860152455639877e-05,
+            "current_rto_setpoints": {
+              "xD": 0.966,
+              "xB": 0.005
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_rto_status",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "rto_has_run": true,
+            "commanded_setpoints": {
+              "xD": 0.966,
+              "xB": 0.005
+            },
+            "commanded_at_min": 0.0,
+            "minutes_since_command": 60.0,
+            "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
+            "rto_status_at_command": {
+              "setpoints": {
+                "xD": 0.966,
+                "xB": 0.005
+              },
+              "realized": {
+                "xD": 0.9659999999999996,
+                "xB": 0.0049999999999992455
+              },
+              "inputs": {
+                "R": 1.9509418999838162,
+                "S": 1.7103204402006797
+              },
+              "objective": 14.132981321998502,
+              "converged": true,
+              "active_constraints": [],
+              "model_plant_gap": 1.7860152455639877e-05,
+              "type": "MA",
+              "iteration": 1
+            },
+            "settled_since_command": false,
+            "n_rto_commands": 1
+          }
+        }
+      ]
+    },
+    {
+      "t": 120.0,
+      "final": "The RTO re-run completed successfully. Here are the updated results:\n\n| Item | Before RTO Re-run | After RTO Re-run |\n|---|---|---|\n| xD setpoint | 0.9660 | **0.9651** |\n| xB setpoint | 0.0080 | **0.0068** |\n| RTO objective | 14.123 | **14.129** (+0.006) |\n| Model-plant gap | 1.21 \u00d7 10\u207b\u2074 | **2.02 \u00d7 10\u207b\u00b3** (now quantified) |\n| Active constraints | None | None |\n| Safety clipping | \u2014 | None |\n\nThe MA-RTO has adapted: it **lowered xD from 0.966 \u2192 0.9651** (closer to where the plant is actually running at 0.9631) and **tightened xB from 0.008 \u2192 0.0068** (exploiting the fact that xB has been running well below its 0.008 target, recovering economic value). The objective improved marginally (+0.006), confirming the new setpoints are more economically consistent with actual plant behaviour.\n\n---\n\n## Supervisory Cycle Summary \u2014 t = 120 min\n\n### Process State\n- **xD = 0.9631** \u2014 physically valid, recovering from a disturbance at t\u2248101 min; ~3 milli-units below the prior RTO target.\n- **xB = 0.00778** \u2014 physically valid, slightly elevated vs. nominal 0.005 but within the RTO's 0.008 target; now being tightened by the new RTO.\n- **R = 1.953, S = 1.711** \u2014 both normal; no constraint pressure.\n\n### MPC Health\n- \ud83d\udd34 **xD innovation bias: \u22121.66 \u00d7 10\u207b\u00b3 (166\u00d7 nominal)** \u2014 model over-predicts xD; mismatch confirmed.\n- \u2705 **xB innovation: 2.0 \u00d7 10\u207b\u2076** \u2014 healthy, near-zero.\n- \ud83d\udd34 **Recent ISE: 3.52 \u00d7 10\u207b\u2075 (35\u00d7 nominal)** \u2014 degraded tracking, driven entirely by xD.\n- \u2705 **No active constraints.**\n\n### Economic / RTO\n- No price/cost changes detected \u2014 no independent economic shift.\n- RTO had been stale for 60 min with the plant unsettled; MA-RTO re-run triggered and completed successfully.\n- New setpoints: **xD = 0.9651, xB = 0.0068** \u2014 adapted to current plant behaviour, objective improved.\n\n### Action Taken\n\u2705 **`trigger_rto_run`** executed \u2014 MA modifier-adaptation re-optimized against the current model-plant gap, issuing corrected setpoints that are both economically optimal and consistent with where the plant is actually operating. No direct `update_mpc_target` override was needed; the RTO handled the setpoint correction.\n\n### Watch Items for Next Cycle\n1. **Monitor xD innovation** \u2014 should trend toward zero as the MPC tracks the new 0.9651 target.\n2. **Monitor ISE** \u2014 expect it to fall back toward ~1 \u00d7 10\u207b\u2076 as xD closes on its new setpoint.\n3. **Confirm plant settlement** \u2014 if xD remains more than ~2 \u00d7 10\u207b\u00b3 below 0.9651 after another 20\u201330 min, consider a further MA-RTO iteration or a direct supervisory nudge downward.\n4. **xB tightening** \u2014 watch that xB tracks down toward 0.0068 without overshooting below spec.",
+      "iterations": 3,
+      "actions": [
+        {
+          "iteration": 0,
+          "tool": "get_process_state",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "t": 120.0,
+            "y": {
+              "xD": 0.9631118789740974,
+              "xB": 0.007779897310722901
+            },
+            "u": {
+              "R": 1.9530011163977787,
+              "S": 1.7110752015281365
+            },
+            "history": {
+              "t": [
+                91.0,
+                92.0,
+                93.0,
+                94.0,
+                95.0,
+                96.0,
+                97.0,
+                98.0,
+                99.0,
+                100.0,
+                101.0,
+                102.0,
+                103.0,
+                104.0,
+                105.0,
+                106.0,
+                107.0,
+                108.0,
+                109.0,
+                110.0,
+                111.0,
+                112.0,
+                113.0,
+                114.0,
+                115.0,
+                116.0,
+                117.0,
+                118.0,
+                119.0,
+                120.0
+              ],
+              "y": {
+                "xD": [
+                  0.965790302819271,
+                  0.9658951163997569,
+                  0.9659589823157901,
+                  0.9659302530159667,
+                  0.9659482233897176,
+                  0.9660790184571324,
+                  0.9660808587087036,
+                  0.9664054641861934,
+                  0.9661240415538892,
+                  0.965530016436243,
+                  0.9504599613156357,
+                  0.950945128131721,
+                  0.9564414455942778,
+                  0.9601627134495607,
+                  0.9622528620564311,
+                  0.9631437411989379,
+                  0.9636292510911665,
+                  0.9636076902398578,
+                  0.9631763660086007,
+                  0.9633420795022354,
+                  0.9631389998839923,
+                  0.9629240169138281,
+                  0.9630992385736301,
+                  0.9634143655277727,
+                  0.9634301598742268,
+                  0.9633781621845884,
+                  0.9630496344478728,
+                  0.9632088528498199,
+                  0.9637428232079676,
+                  0.9631118789740974
+                ],
+                "xB": [
+                  0.007871385978302088,
+                  0.008013762217763603,
+                  0.008077644614519925,
+                  0.007715417595579448,
+                  0.007732174031758066,
+                  0.008027590032685423,
+                  0.007968289317260875,
+                  0.00807805063757491,
+                  0.008078114054161055,
+                  0.008091157957037921,
+                  0.008043609865181857,
+                  0.008173440180844151,
+                  0.007871219587762629,
+                  0.007842906273356388,
+                  0.008399668443239435,
+                  0.008005135629931494,
+                  0.007601648763029276,
+                  0.006483166269555519,
+                  0.008453655169884573,
+                  0.008194567926384238,
+                  0.008335317304663928,
+                  0.008200505550234178,
+                  0.007446770778268466,
+                  0.00790232908488801,
+                  0.007722597405873107,
+                  0.008169087991374703,
+                  0.008094738520357778,
+                  0.007932721835401366,
+                  0.008102174941385886,
+                  0.007779897310722901
+                ]
+              },
+              "u": {
+                "R": [
+                  1.9505077333903753,
+                  1.9505367906618905,
+                  1.9504936478793473,
+                  1.9505830437352178,
+                  1.950569913202564,
+                  1.9505217875783376,
+                  1.9503951974530485,
+                  1.9504309848629302,
+                  1.9503539261112235,
+                  1.9505592392918711,
+                  1.9507523901366595,
+                  1.9587000876003517,
+                  1.9564730401380708,
+                  1.9541467654480358,
+                  1.9530836623271972,
+                  1.9529804790671697,
+                  1.9533307330703016,
+                  1.9539298677890267,
+                  1.9542046653192868,
+                  1.9538708704679961,
+                  1.9533036312716199,
+                  1.9533420615057997,
+                  1.9534679466707299,
+                  1.9534220758680398,
+                  1.9534091528697535,
+                  1.9533020179287426,
+                  1.953224613855125,
+                  1.9533918575032754,
+                  1.9532444271810356,
+                  1.9530011163977787
+                ],
+                "S": [
+                  1.7100392634005372,
+                  1.7100446810683394,
+                  1.7101132497498972,
+                  1.7100303346894998,
+                  1.709886256581424,
+                  1.70994492923429,
+                  1.7101527576560938,
+                  1.710073814652339,
+                  1.710021741408507,
+                  1.7099575705006511,
+                  1.7100264251462722,
+                  1.709650283790979,
+                  1.7101972513703503,
+                  1.7103501594674315,
+                  1.7110105177918196,
+                  1.712417240272762,
+                  1.712308848312529,
+                  1.7116537151325806,
+                  1.7112027416286792,
+                  1.7111810007410964,
+                  1.7110160343290302,
+                  1.7113371794604482,
+                  1.711429169992109,
+                  1.7111448696015155,
+                  1.711165722531889,
+                  1.7110360583661806,
+                  1.7111910718071583,
+                  1.7110224305375374,
+                  1.711034264455228,
+                  1.7110752015281365
+                ]
+              }
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_mpc_health",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "innovation_mean": {
+              "xD": -0.001664974635234943,
+              "xB": 2.0429214243175045e-06
+            },
+            "innovation_std": {
+              "xD": 0.0030920121054553063,
+              "xB": 0.00025763261077050626
+            },
+            "active_constraints": [],
+            "ise_recent": 3.5197602583356573e-05,
+            "ise_recent_by_output": {
+              "xD": 3.506811817798256e-05,
+              "xB": 1.294844053740126e-07
+            },
+            "innovation_window_samples": 20
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_economic_context",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "prices": {
+              "F": 1.0,
+              "z_F": 0.5,
+              "p_D": 29.3513,
+              "p_pen": 2.0,
+              "p_B": 0.3,
+              "c_S": 0.1306,
+              "xB_max": 0.05,
+              "D_max": null
+            },
+            "last_rto_objective": 14.12348536693836,
+            "model_plant_gap": 0.00012057821972355498,
+            "current_rto_setpoints": {
+              "xD": 0.966,
+              "xB": 0.008
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_rto_status",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "rto_has_run": true,
+            "commanded_setpoints": {
+              "xD": 0.966,
+              "xB": 0.008
+            },
+            "commanded_at_min": 60.0,
+            "minutes_since_command": 60.0,
+            "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
+            "rto_status_at_command": {
+              "setpoints": {
+                "xD": 0.966,
+                "xB": 0.008
+              },
+              "realized": {
+                "xD": 0.966000000000002,
+                "xB": 0.008000000000001534
+              },
+              "inputs": {
+                "R": 1.9504830878782975,
+                "S": 1.7100097103091114
+              },
+              "objective": 14.12348536693836,
+              "converged": true,
+              "active_constraints": [],
+              "model_plant_gap": 0.00012057821972355498,
+              "type": "MA",
+              "iteration": 2
+            },
+            "settled_since_command": false,
+            "n_rto_commands": 2
+          }
+        },
+        {
+          "iteration": 1,
+          "tool": "trigger_rto_run",
+          "status": "executed",
+          "args": {
+            "rationale": "Sustained model-plant mismatch on xD detected at t=120 min: innovation mean is -1.66e-3 (166x nominal reference of 1e-5), recent ISE is 3.52e-5 (35x nominal). The plant has not settled to the RTO-commanded xD=0.966 in 60 minutes since the last RTO command at t=60 min; actual xD is 0.9631. The MA-RTO needs to re-run to incorporate the current model-plant gap (modifier adaptation) and issue corrected, plant-consistent setpoints. No economic shift or instrument fault is present \u2014 this is a mismatch/disturbance-recovery trigger."
+          },
+          "result": {
+            "status": "ok",
+            "commanded_setpoints": {
+              "xD": 0.9651234410871515,
+              "xB": 0.0067918595180955854
+            },
+            "rto_variant": "MA",
+            "objective": 14.128713448141525,
+            "active_constraints": [],
+            "model_plant_gap": 0.0020182793266201315,
+            "clipped_by_safety": false
+          }
+        }
+      ]
+    },
+    {
+      "t": 180.0,
+      "final": "The MA-RTO has converged and issued fresh setpoints. Here is the final assessment:\n\n---\n\n## \u2705 Supervisory Cycle Summary \u2014 t = 180 min\n\n### Process State\n- **xD = 0.9618**, **xB = 0.00561** \u2014 both physically plausible, consistent with stable R \u2248 1.953 and S \u2248 1.711 lb/min. **No sensor fault.**\n\n### MPC Health \u2014 Issues Detected\n| Issue | Detail |\n|---|---|\n| \ud83d\udd34 xD innovation bias | Mean = \u22129.2\u00d710\u207b\u2074 (92\u00d7 nominal) \u2014 MPC model over-predicts xD; plant is lagging the setpoint |\n| \ud83d\udd34 Elevated ISE | 3.83\u00d710\u207b\u2075 (38\u00d7 nominal), driven almost entirely by xD tracking error |\n| \ud83d\udfe2 xB health | Innovation and ISE both nominal \u2014 no concern |\n| \ud83d\udfe2 No active constraints | Full MPC authority available |\n\n### Root Cause\nThe RTO commanded **xD = 0.9644** at t=120 min. Sixty minutes later the plant has **not settled** \u2014 xD is stuck at ~0.9618 due to model-plant mismatch. The MA-RTO's model-plant economic gap (7.43\u00d710\u207b\u2074 \u2192 now 1.44\u00d710\u207b\u00b3) confirms the internal model is drifting from plant reality.\n\n### Action Taken\n**Triggered MA-RTO re-run.** The Modifier Adaptation algorithm incorporated current plant gradient corrections and issued updated setpoints:\n\n| Setpoint | Old (t=120) | New (t=180) | Change |\n|---|---|---|---|\n| **xD** | 0.9644 | **0.9636** | \u22120.0008 (relaxed toward plant reality) |\n| **xB** | 0.00602 | **0.00545** | \u22120.00057 (tightened slightly) |\n| RTO Objective | 14.1306 | **14.1311** | Marginally improved (+0.004%) |\n\nThe new xD target of **0.9636** is closer to the current plant operating point (~0.9618), reducing the tracking error the MPC must close. The xB target tightening to 0.00545 reflects the MA correction for the bottoms loop. No safety clipping was applied; no constraints are active.\n\n### Next Cycle Recommendation\n- Monitor whether xD converges toward 0.9636 over the next 20\u201330 min and whether the innovation bias shrinks back toward nominal (~1\u00d710\u207b\u2075).\n- If the model-plant gap continues to grow (currently 1.44\u00d710\u207b\u00b3 and rising), consider flagging for model re-identification offline \u2014 the MA-RTO can compensate for moderate mismatch but not unbounded drift.",
+      "iterations": 3,
+      "actions": [
+        {
+          "iteration": 0,
+          "tool": "get_process_state",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "t": 180.0,
+            "y": {
+              "xD": 0.9618104560640697,
+              "xB": 0.005606089342142185
+            },
+            "u": {
+              "R": 1.9528033667313198,
+              "S": 1.7110457027369317
+            },
+            "history": {
+              "t": [
+                151.0,
+                152.0,
+                153.0,
+                154.0,
+                155.0,
+                156.0,
+                157.0,
+                158.0,
+                159.0,
+                160.0,
+                161.0,
+                162.0,
+                163.0,
+                164.0,
+                165.0,
+                166.0,
+                167.0,
+                168.0,
+                169.0,
+                170.0,
+                171.0,
+                172.0,
+                173.0,
+                174.0,
+                175.0,
+                176.0,
+                177.0,
+                178.0,
+                179.0,
+                180.0
+              ],
+              "y": {
+                "xD": [
+                  0.9622042906050893,
+                  0.96174852808345,
+                  0.9616976375875597,
+                  0.9617883176298223,
+                  0.9616681004167683,
+                  0.9617396786866844,
+                  0.9615297425393368,
+                  0.9617021594008013,
+                  0.961694726171111,
+                  0.9618523734773786,
+                  0.9621431586945516,
+                  0.9620984898401337,
+                  0.9616271874677093,
+                  0.9614006365727435,
+                  0.9619204009313278,
+                  0.9621234978039666,
+                  0.9614438797333856,
+                  0.9615338151526629,
+                  0.9621221396532967,
+                  0.9618897273784536,
+                  0.9618295581750548,
+                  0.9618161227365347,
+                  0.9621471817106483,
+                  0.961518730396757,
+                  0.9615154022595102,
+                  0.9616910207911531,
+                  0.9616435299225524,
+                  0.9612479813502731,
+                  0.96213065448929,
+                  0.9618104560640697
+                ],
+                "xB": [
+                  0.005946342876267147,
+                  0.005784467179826373,
+                  0.006178195317113104,
+                  0.005966038365807797,
+                  0.005987546333217303,
+                  0.006014366163452231,
+                  0.005627068484970535,
+                  0.005682875074581697,
+                  0.005991246748935724,
+                  0.006579773699207254,
+                  0.006005909090119678,
+                  0.006177284981587288,
+                  0.006181236251021877,
+                  0.005072703397635065,
+                  0.005791135248683558,
+                  0.005791222289148876,
+                  0.006177507121042115,
+                  0.00624287944645069,
+                  0.006122847097612347,
+                  0.006057468795410216,
+                  0.005731883381441376,
+                  0.006067105537199201,
+                  0.005860932220955826,
+                  0.00601471413736226,
+                  0.006079053313515892,
+                  0.00622672969219567,
+                  0.005934284339451102,
+                  0.0057612346065236564,
+                  0.005784979787691244,
+                  0.005606089342142185
+                ]
+              },
+              "u": {
+                "R": [
+                  1.9530565066368981,
+                  1.9529056723741987,
+                  1.9532366030619466,
+                  1.953087752995531,
+                  1.9530135802032957,
+                  1.9531303060396916,
+                  1.9531229551310614,
+                  1.9531656072182026,
+                  1.9530323811519925,
+                  1.953081792826987,
+                  1.953051054455121,
+                  1.9529960463262188,
+                  1.9530752404525313,
+                  1.95321232753991,
+                  1.9531489250822724,
+                  1.9529291011005716,
+                  1.9528330319524982,
+                  1.9532429732050185,
+                  1.9532512567431302,
+                  1.9529498364002917,
+                  1.9531114381959398,
+                  1.9529958296566687,
+                  1.9530305620985555,
+                  1.9528707800237086,
+                  1.9533004597170556,
+                  1.95320521466798,
+                  1.9530967133540666,
+                  1.9531551613264624,
+                  1.953330425196425,
+                  1.9528033667313198
+                ],
+                "S": [
+                  1.7110903623858587,
+                  1.7109837861095007,
+                  1.7108628933493606,
+                  1.7110875643683219,
+                  1.7110194891344555,
+                  1.7109622507287412,
+                  1.7109693209052694,
+                  1.7108975115024965,
+                  1.710981961211155,
+                  1.7111268041438836,
+                  1.7112311349144944,
+                  1.7108746246629478,
+                  1.71097450419204,
+                  1.7110425959515299,
+                  1.7107337179155788,
+                  1.7110277449938938,
+                  1.7110387444164024,
+                  1.711164917267552,
+                  1.710987475403614,
+                  1.7109490437722576,
+                  1.7109375742754889,
+                  1.7109604580840079,
+                  1.7110941797714254,
+                  1.7109692911615613,
+                  1.7110238242679936,
+                  1.7109762258092487,
+                  1.7110345347671898,
+                  1.710915418223675,
+                  1.7109457655381872,
+                  1.7110457027369317
+                ]
+              }
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_mpc_health",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "innovation_mean": {
+              "xD": -0.0009195476271587573,
+              "xB": -1.1514468658588251e-05
+            },
+            "innovation_std": {
+              "xD": 0.0003304085721354355,
+              "xB": 0.00032470533135710007
+            },
+            "active_constraints": [],
+            "ise_recent": 3.831865949184313e-05,
+            "ise_recent_by_output": {
+              "xD": 3.81402661035424e-05,
+              "xB": 1.783933883007262e-07
+            },
+            "innovation_window_samples": 20
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_economic_context",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "prices": {
+              "F": 1.0,
+              "z_F": 0.5,
+              "p_D": 29.3513,
+              "p_pen": 2.0,
+              "p_B": 0.3,
+              "c_S": 0.1306,
+              "xB_max": 0.05,
+              "D_max": null
+            },
+            "last_rto_objective": 14.130575631310126,
+            "model_plant_gap": 0.0007432764330985719,
+            "current_rto_setpoints": {
+              "xD": 0.9643926385455261,
+              "xB": 0.006024056878891132
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_rto_status",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "rto_has_run": true,
+            "commanded_setpoints": {
+              "xD": 0.9643926385455261,
+              "xB": 0.006024056878891132
+            },
+            "commanded_at_min": 120.0,
+            "minutes_since_command": 60.0,
+            "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
+            "rto_status_at_command": {
+              "setpoints": {
+                "xD": 0.9643926385455261,
+                "xB": 0.006024056878891132
+              },
+              "realized": {
+                "xD": 0.9487104568304549,
+                "xB": 0.0060240568788895565
+              },
+              "inputs": {
+                "R": 1.9505329544648986,
+                "S": 1.7101285279685279
+              },
+              "objective": 14.130575631310126,
+              "converged": true,
+              "active_constraints": [],
+              "model_plant_gap": 0.0007432764330985719,
+              "type": "MA",
+              "iteration": 4
+            },
+            "settled_since_command": false,
+            "n_rto_commands": 4
+          }
+        },
+        {
+          "iteration": 1,
+          "tool": "trigger_rto_run",
+          "status": "executed",
+          "args": {
+            "rationale": "Persistent model-plant mismatch on xD: innovation mean is -9.2e-4 (92x nominal), ISE is 3.83e-5 (38x nominal), and the plant has not settled to the RTO setpoint of xD=0.9644 commanded 60 min ago \u2014 xD is sitting at ~0.9618 with a sustained negative bias. No price/cost changes detected, so this is a mismatch/disturbance issue. Triggering MA-RTO to incorporate updated modifier corrections and recompute economically-optimal setpoints that the MPC can actually track given the current plant state."
+          },
+          "result": {
+            "status": "ok",
+            "commanded_setpoints": {
+              "xD": 0.9636441382417651,
+              "xB": 0.005448522896459825
+            },
+            "rto_variant": "MA",
+            "objective": 14.131142530518183,
+            "active_constraints": [],
+            "model_plant_gap": 0.0014360611136758905,
+            "clipped_by_safety": false
+          }
+        }
+      ]
+    },
+    {
+      "t": 240.0,
+      "final": "The RTO has re-run and issued fresh setpoints. Here is the final summary:\n\n---\n\n## \u2705 Supervisory Cycle Summary \u2014 t = 240 min\n\n### Actions Taken\n**Triggered MA-RTO re-run** \u2192 New setpoints commanded to MPC:\n- **xD: 0.9628 \u2192 0.9620** (reduced by 0.0008)\n- **xB: 0.004982 \u2192 0.004591** (reduced by 0.000391)\n- RTO objective: 14.130 (essentially unchanged \u2014 economically near-optimal)\n- No safety clipping applied; no active constraints\n\n---\n\n### Findings Summary\n\n| Layer | Finding | Severity |\n|---|---|---|\n| **Sensors** | xD = 0.9606, xB = 0.00529 \u2014 both physically plausible, consistent with stable R & S | \u2705 Healthy |\n| **MPC \u2014 xB** | Innovation mean \u22126\u00d710\u207b\u2076, ISE negligible | \u2705 Healthy |\n| **MPC \u2014 xD** | Innovation mean **\u22129.3\u00d710\u207b\u2074 (93\u00d7 nominal)**, ISE **3.4\u00d710\u207b\u2075 (34\u00d7 nominal)** | \u26a0\ufe0f Mismatch |\n| **RTO** | Last ran t=180 (60 min ago); plant not settled; 0.0022 offset below xD target | \u26a0\ufe0f Stale |\n| **Economics** | Model-plant economic gap 0.0023; no price/cost shift detected | \u26a0\ufe0f Gap present |\n\n### Interpretation\nThe elevated xD innovation bias and ISE are caused by a **model-plant mismatch on the xD channel** \u2014 the MPC's internal model over-predicts xD, causing it to under-drive the reflux relative to what the plant actually needs. The MA-RTO has now re-optimized with fresh modifier corrections, nudging the xD setpoint down slightly to **0.9620** (a more achievable target given current plant behaviour) while also adjusting xB to **0.004591** to maintain economic optimality. The objective is preserved at 14.130.\n\n### Watch Points for Next Cycle\n1. **Monitor xD innovation bias** \u2014 it should trend toward zero as the MPC tracks the new, more achievable setpoint.\n2. **Monitor ISE** \u2014 expect it to fall back toward the ~1\u00d710\u207b\u2076 nominal range within the next 20\u201330 min.\n3. **Check `settled_since_command`** in the next RTO status poll \u2014 if the plant still hasn't settled after another 30\u201360 min, consider a further MA-RTO iteration or a direct supervisory nudge to xD.\n4. **Model-plant economic gap** has slightly widened to 0.00262 \u2014 if it continues growing, flag for model re-identification.",
+      "iterations": 3,
+      "actions": [
+        {
+          "iteration": 0,
+          "tool": "get_process_state",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "t": 240.0,
+            "y": {
+              "xD": 0.960631607109701,
+              "xB": 0.005289872443879084
+            },
+            "u": {
+              "R": 1.9528863655938384,
+              "S": 1.7110777723793307
+            },
+            "history": {
+              "t": [
+                211.0,
+                212.0,
+                213.0,
+                214.0,
+                215.0,
+                216.0,
+                217.0,
+                218.0,
+                219.0,
+                220.0,
+                221.0,
+                222.0,
+                223.0,
+                224.0,
+                225.0,
+                226.0,
+                227.0,
+                228.0,
+                229.0,
+                230.0,
+                231.0,
+                232.0,
+                233.0,
+                234.0,
+                235.0,
+                236.0,
+                237.0,
+                238.0,
+                239.0,
+                240.0
+              ],
+              "y": {
+                "xD": [
+                  0.9598723392783801,
+                  0.9602680879442,
+                  0.9601797846691482,
+                  0.9599589033888948,
+                  0.9600715094017813,
+                  0.9605606858649616,
+                  0.9602866186406582,
+                  0.960376266755831,
+                  0.960355267808433,
+                  0.9601336758782926,
+                  0.9601590665339931,
+                  0.9604732247868893,
+                  0.9602305458670264,
+                  0.9604081851946001,
+                  0.9603661126799857,
+                  0.9599753976839884,
+                  0.9601182887293168,
+                  0.9607660075762349,
+                  0.9602259160912164,
+                  0.9601263470774473,
+                  0.9598230253802945,
+                  0.9598021316152807,
+                  0.960408547575856,
+                  0.9605791119955777,
+                  0.9599869600828103,
+                  0.9603386531723221,
+                  0.9601324104492744,
+                  0.9601803454260536,
+                  0.9605176964488126,
+                  0.960631607109701
+                ],
+                "xB": [
+                  0.00475476456079935,
+                  0.004978304653790734,
+                  0.005139608283874547,
+                  0.0050898585053842215,
+                  0.00470880043403485,
+                  0.004825945361726633,
+                  0.004710347044707217,
+                  0.0048472874999083305,
+                  0.005243646027027937,
+                  0.004864739499086033,
+                  0.005201372818843343,
+                  0.005224463184125441,
+                  0.004855444586910051,
+                  0.004829806162616113,
+                  0.004978798918068618,
+                  0.0047111953974099,
+                  0.005195844569457519,
+                  0.0049344029419375185,
+                  0.004448447351446715,
+                  0.004894287196499237,
+                  0.004934210299938471,
+                  0.004792799858385619,
+                  0.004832225377151224,
+                  0.005245363784656196,
+                  0.004655063040624909,
+                  0.004864512384842695,
+                  0.004958557432555355,
+                  0.004816725657392957,
+                  0.005099903807172629,
+                  0.005289872443879084
+                ]
+              },
+              "u": {
+                "R": [
+                  1.9531574541424928,
+                  1.953076884371447,
+                  1.9529233916642097,
+                  1.9530717625325593,
+                  1.9531703192089678,
+                  1.953101559097041,
+                  1.9528210958427845,
+                  1.9529966122269287,
+                  1.9529078093668595,
+                  1.953016353392826,
+                  1.9531177723502515,
+                  1.9530849936908572,
+                  1.952877795161309,
+                  1.9530203873702008,
+                  1.9529323804430894,
+                  1.9529352248282679,
+                  1.9531216967827296,
+                  1.9530624303994801,
+                  1.9527321715125303,
+                  1.9530535992520923,
+                  1.9530141841111606,
+                  1.9531096900906266,
+                  1.9531627128003592,
+                  1.9529291940697326,
+                  1.952845190326266,
+                  1.9531231273710035,
+                  1.9529318396226572,
+                  1.9531157993614263,
+                  1.9529967036986458,
+                  1.9528863655938384
+                ],
+                "S": [
+                  1.711048421073895,
+                  1.7109911531455708,
+                  1.7110937312591905,
+                  1.711073458565185,
+                  1.7110584196763965,
+                  1.7109289289916458,
+                  1.711041579310903,
+                  1.7110489872638117,
+                  1.711098547652767,
+                  1.7111276789001366,
+                  1.7109278704882265,
+                  1.711080843126233,
+                  1.7110693808627921,
+                  1.7109492169107778,
+                  1.7110002433013807,
+                  1.711098109118227,
+                  1.7109766923916072,
+                  1.7111259515118458,
+                  1.710956565064603,
+                  1.7108113361864303,
+                  1.7111080191071888,
+                  1.7111212500386739,
+                  1.7109546519070933,
+                  1.7109398034979613,
+                  1.7111593728761112,
+                  1.7109415722070425,
+                  1.7110976629565946,
+                  1.71101188987303,
+                  1.7110126629281885,
+                  1.7110777723793307
+                ]
+              }
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_mpc_health",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "innovation_mean": {
+              "xD": -0.0009305584977276196,
+              "xB": -6.019175648977123e-06
+            },
+            "innovation_std": {
+              "xD": 0.00027798585404083443,
+              "xB": 0.0002785146594696545
+            },
+            "active_constraints": [],
+            "ise_recent": 3.4367002449600023e-05,
+            "ise_recent_by_output": {
+              "xD": 3.420433139200191e-05,
+              "xB": 1.626710575981191e-07
+            },
+            "innovation_window_samples": 20
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_economic_context",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "prices": {
+              "F": 1.0,
+              "z_F": 0.5,
+              "p_D": 29.3513,
+              "p_pen": 2.0,
+              "p_B": 0.3,
+              "c_S": 0.1306,
+              "xB_max": 0.05,
+              "D_max": null
+            },
+            "last_rto_objective": 14.1309405288369,
+            "model_plant_gap": 0.002289256722869837,
+            "current_rto_setpoints": {
+              "xD": 0.9628403779743204,
+              "xB": 0.004982206951377913
+            }
+          }
+        },
+        {
+          "iteration": 0,
+          "tool": "get_rto_status",
+          "status": "executed",
+          "args": {},
+          "result": {
+            "rto_has_run": true,
+            "commanded_setpoints": {
+              "xD": 0.9628403779743204,
+              "xB": 0.004982206951377913
+            },
+            "commanded_at_min": 180.0,
+            "minutes_since_command": 60.0,
+            "rto_variant": "MA",
+            "rto_converged": true,
+            "rto_solve_status": "optimal",
+            "rto_status_at_command": {
+              "setpoints": {
+                "xD": 0.9628403779743204,
+                "xB": 0.004982206951377913
+              },
+              "realized": {
+                "xD": 0.9472661530569357,
+                "xB": 0.004982206951379071
+              },
+              "inputs": {
+                "R": 1.950448613216708,
+                "S": 1.7101535381587059
+              },
+              "objective": 14.1309405288369,
+              "converged": true,
+              "active_constraints": [],
+              "model_plant_gap": 0.002289256722869837,
+              "type": "MA",
+              "iteration": 6
+            },
+            "settled_since_command": false,
+            "n_rto_commands": 6
+          }
+        },
+        {
+          "iteration": 1,
+          "tool": "trigger_rto_run",
+          "status": "executed",
+          "args": {
+            "rationale": "Sustained negative xD innovation bias of -9.3e-4 (93x nominal reference) and recent ISE of 3.44e-5 (34x nominal) indicate persistent model-plant mismatch on the xD channel. The MA-RTO last ran at t=180 min (60 min ago) and commanded xD=0.9628, but the plant has not settled and is tracking at ~0.9606 \u2014 a 0.0022 offset below target. The model-plant economic gap is 0.00229. Re-running the MA-RTO will incorporate the latest plant measurements and modifier corrections to recompute economically-optimal setpoints that are consistent with the current plant behaviour, potentially pulling xD back to a more achievable level and reducing the sustained tracking error."
+          },
+          "result": {
+            "status": "ok",
+            "commanded_setpoints": {
+              "xD": 0.9619726523050026,
+              "xB": 0.004591032783247561
+            },
+            "rto_variant": "MA",
+            "objective": 14.130205393572712,
+            "active_constraints": [],
+            "model_plant_gap": 0.002618863619556322,
+            "clipped_by_safety": false
+          }
+        }
+      ]
+    }
+  ],
+  "final_realized": {
+    "xD": 0.960631607109701,
+    "xB": 0.005289872443879084
+  },
+  "final_setpoint": {
+    "xD": 0.961038287836069,
+    "xB": 0.004256837091411125
+  },
+  "n_rto_commands": 8,
+  "n_agent_decisions": 4,
+  "n_agent_actions": 3
+}
