@@ -1,0 +1,51 @@
+{
+  "all_ok": true,
+  "cases": [
+    {
+      "case": "nominal",
+      "final_state": "NOMINAL",
+      "final_action": "HOLD",
+      "expected": true,
+      "proposed_targets": null
+    },
+    {
+      "case": "sensor_fault",
+      "final_state": "SENSOR_FAULT",
+      "final_action": "VETO_HOLD",
+      "expected": true,
+      "proposed_targets": null
+    },
+    {
+      "case": "coupled_load",
+      "final_state": "REAL_DISTURBANCE",
+      "final_action": "PROPOSE_SETPOINT",
+      "expected": true,
+      "proposed_targets": {
+        "xD": 0.9561181994359825,
+        "xB": 0.012060292077417123
+      }
+    },
+    {
+      "case": "ambiguous_load",
+      "final_state": "AMBIGUOUS",
+      "final_action": "ESCALATE",
+      "expected": true,
+      "proposed_targets": null
+    },
+    {
+      "case": "out_of_range_request",
+      "clipped_by_safety": true,
+      "applied_targets": {
+        "xD": 0.99,
+        "xB": 0.004
+      },
+      "expected": true
+    }
+  ],
+  "rationales": {
+    "nominal": "Innovation within noise and offset small; tracking the setpoint.",
+    "sensor_fault": "xD read 1.010 -- physically impossible (composition must lie in [0,1]); analyzer gross error, not a process change. Hold; do not re-optimize on corrupted data (flag the xD analyzer for inspection).",
+    "coupled_load": "Mismatch shows in BOTH composition innovations (coupled) -> a real process disturbance. Recommend a bounded setpoint correction (subject to the safety clip) and flag for engineering review.",
+    "ambiguous_load": "Sustained mismatch isolated to the xD innovation (-1.74e-03) while xB stays at its nominal floor. A real xD load and an in-range xD sensor bias are indistinguishable from telemetry alone -- request a corroborating check (analyzer/feed) before any setpoint move."
+  }
+}
