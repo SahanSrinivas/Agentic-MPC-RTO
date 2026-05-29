@@ -23,6 +23,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+mcp = ["mcp>=1.0"]      # Milestone-1 MCP server exposing the MPC sim sandbox (agentic_mpc.mcp_server)
+
+[project.scripts]
+agentic-mpc-mcp = "agentic_mpc.mcp_server:main"   # stdio MCP server: `agentic-mpc-mcp`
 
 [tool.setuptools.packages.find]
 include = ["agentic_mpc*"]
