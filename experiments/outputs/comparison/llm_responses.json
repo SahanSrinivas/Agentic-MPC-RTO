@@ -1,0 +1,24 @@
+{
+  "nominal": {
+    "action": "HOLD",
+    "rationale": "Both innovations are well within nominal noise levels (~1e-5), steady-state offsets are negligible, all measured compositions are physically valid and within tight ranges, and no constraints are active \u2014 tracking is normal."
+  },
+  "sensor_fault": {
+    "action": "VETO_HOLD",
+    "xD_sp": null,
+    "xB_sp": null,
+    "rationale": "The xD measurement range [0.9646, 1.0097] contains values exceeding 1.0, which is physically impossible for a composition, indicating a gross xD analyzer error; hold and do not chase with setpoint changes."
+  },
+  "coupled_load": {
+    "action": "PROPOSE_SETPOINT",
+    "xD_sp": 0.955,
+    "xB_sp": 0.011,
+    "rationale": "Both innovations are significantly above the ~5e-4 noise threshold with opposite-sign biases (xD low, xB high) consistent with a real process disturbance shifting the separation, so a bounded setpoint adjustment toward the current measured values is warranted."
+  },
+  "ambiguous_load": {
+    "action": "ESCALATE",
+    "xD_sp": null,
+    "xB_sp": null,
+    "rationale": "xD innovation is strongly biased (-1.50e-3, well above noise threshold) with a -0.0043 steady-state offset while xB innovation remains near zero (-6.1e-6), indicating a mismatch isolated to the distillate composition that could be either a real load disturbance or an xD analyzer bias \u2014 corroborating evidence (e.g., lab sample or redundant sensor) is needed before acting."
+  }
+}

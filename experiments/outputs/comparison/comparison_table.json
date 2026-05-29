@@ -1,0 +1,77 @@
+{
+  "rows": [
+    {
+      "case": "nominal",
+      "mpc_only": {
+        "innov_xD": 4.849617750704642e-06,
+        "offset_xD": -9.481934583710494e-05,
+        "measured_xD": 0.9599051806541629,
+        "true_xD": 0.9600776846115787,
+        "supervisor": "none"
+      },
+      "rules_action": "HOLD",
+      "rules_state": "NOMINAL",
+      "llm_action": "HOLD",
+      "llm_rationale": "Both innovations are well within nominal noise levels (~1e-5), steady-state offsets are negligible, all measured compositions are physically valid and within tight ranges, and no constraints are active \u2014 tracking is normal.",
+      "match": true,
+      "final_action": "HOLD",
+      "llm_overridden": false
+    },
+    {
+      "case": "sensor_fault",
+      "mpc_only": {
+        "innov_xD": 0.0025058347958335217,
+        "offset_xD": 0.006852035490939823,
+        "measured_xD": 0.9668520354909398,
+        "true_xD": 0.9170245394483556,
+        "supervisor": "none"
+      },
+      "rules_action": "VETO_HOLD",
+      "rules_state": "SENSOR_FAULT",
+      "llm_action": "VETO_HOLD",
+      "llm_rationale": "The xD measurement range [0.9646, 1.0097] contains values exceeding 1.0, which is physically impossible for a composition, indicating a gross xD analyzer error; hold and do not chase with setpoint changes.",
+      "match": true,
+      "final_action": "VETO_HOLD",
+      "llm_overridden": false
+    },
+    {
+      "case": "coupled_load",
+      "mpc_only": {
+        "innov_xD": -0.0009955444534823893,
+        "offset_xD": -0.002934218108281539,
+        "measured_xD": 0.9570657818917184,
+        "true_xD": 0.9572382858491343,
+        "supervisor": "none"
+      },
+      "rules_action": "PROPOSE_SETPOINT",
+      "rules_state": "REAL_DISTURBANCE",
+      "llm_action": "PROPOSE_SETPOINT",
+      "llm_rationale": "Both innovations are significantly above the ~5e-4 noise threshold with opposite-sign biases (xD low, xB high) consistent with a real process disturbance shifting the separation, so a bounded setpoint adjustment toward the current measured values is warranted.",
+      "match": true,
+      "final_action": "PROPOSE_SETPOINT",
+      "llm_overridden": false
+    },
+    {
+      "case": "ambiguous_load",
+      "mpc_only": {
+        "innov_xD": -0.0014957414890989908,
+        "offset_xD": -0.00426301577694066,
+        "measured_xD": 0.9557369842230593,
+        "true_xD": 0.9559094881804752,
+        "supervisor": "none"
+      },
+      "rules_action": "ESCALATE",
+      "rules_state": "AMBIGUOUS",
+      "llm_action": "ESCALATE",
+      "llm_rationale": "xD innovation is strongly biased (-1.50e-3, well above noise threshold) with a -0.0043 steady-state offset while xB innovation remains near zero (-6.1e-6), indicating a mismatch isolated to the distillate composition that could be either a real load disturbance or an xD analyzer bias \u2014 corroborating evidence (e.g., lab sample or redundant sensor) is needed before acting.",
+      "match": true,
+      "final_action": "ESCALATE",
+      "llm_overridden": false
+    }
+  ],
+  "out_of_range": {
+    "clipped": true,
+    "applied_xD": 0.99
+  },
+  "match_rate": "4/4"
+}
