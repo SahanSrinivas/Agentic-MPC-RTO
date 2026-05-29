@@ -43,7 +43,7 @@
     }
   ],
   "rationales": {
-    "nominal": "Innovation within noise and offset small; tracking the setpoint.",
+    "nominal": "Innovation within noise (no model-plant mismatch); tracking the setpoint.",
     "sensor_fault": "xD read 1.010 -- physically impossible (composition must lie in [0,1]); analyzer gross error, not a process change. Hold; do not re-optimize on corrupted data (flag the xD analyzer for inspection).",
     "coupled_load": "Mismatch shows in BOTH composition innovations (coupled) -> a real process disturbance. Recommend a bounded setpoint correction (subject to the safety clip) and flag for engineering review.",
     "ambiguous_load": "Sustained mismatch isolated to the xD innovation (-1.74e-03) while xB stays at its nominal floor. A real xD load and an in-range xD sensor bias are indistinguishable from telemetry alone -- request a corroborating check (analyzer/feed) before any setpoint move."
