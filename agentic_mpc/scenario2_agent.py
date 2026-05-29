@@ -64,9 +64,10 @@ class DiagnosticSupervisor:
         self._latched = None
 
     @staticmethod
-    def _window_excursion(history: dict, y: dict, tol: float = 1e-3):
-        """Worst physically-impossible reading (composition outside [0,1]) in the recent window or
-        the current sample. Returns (channel, value) or None. A small tol ignores noise at the edge."""
+    def _window_excursion(history: dict, y: dict, tol: float = 2e-3):
+        """Worst physically-impossible reading (composition CLEARLY outside [0,1]) in the recent window
+        or current sample. Returns (channel, value) or None. tol (>> sensor-noise std 2e-4) ensures a
+        genuine gross error triggers, not a noise-scale dip near the boundary on the unclamped model."""
         worst = None
         series = {"xD": list(history.get("y", {}).get("xD", [])) + [y.get("xD")],
                   "xB": list(history.get("y", {}).get("xB", [])) + [y.get("xB")]}
@@ -99,11 +100,14 @@ class DiagnosticSupervisor:
         ev = {"innov": {"xD": im.get("xD"), "xB": im.get("xB")}, "offset": off,
               "constraints": constraints, "y": y}
 
-        mismatch = (iD > c.innov_thresh or iB > c.innov_thresh
-                    or offD > c.offset_xD or offB > c.offset_xB)
-        if not mismatch and not constraints:
+        # the model-plant-mismatch trigger is the INNOVATION (and active constraints), NOT raw offset:
+        # offset is transiently large after ANY setpoint change while innovation is not (the MPC
+        # models the setpoint), so gating on innovation avoids false alarms on a supervisor's own move.
+        mismatch = (iD > c.innov_thresh or iB > c.innov_thresh or bool(constraints))
+        if not mismatch:
             return Decision("NOMINAL", "HOLD",
-                            "Innovation within noise and offset small; tracking the setpoint.", ev)
+                            "Innovation within noise (no model-plant mismatch); tracking the setpoint.",
+                            ev)
 
         # plausibility scans the recent window, not just the instant: a sensor spike is transient
         # because the MPC chases the bad reading back into range, but the excursion still happened.

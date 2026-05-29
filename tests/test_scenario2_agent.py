@@ -45,9 +45,11 @@ def test_single_channel_innovation_escalates():
     assert d.state == "AMBIGUOUS" and d.action == "ESCALATE"
 
 
-def test_offset_only_mismatch_escalates():
+def test_offset_without_innovation_is_a_tracking_transient_not_a_fault():
+    # raw offset with clean innovation = setpoint-tracking lag (e.g. right after a setpoint change),
+    # NOT a model-plant fault -> must not trigger (otherwise it false-blocks the supervisor's own move).
     d = DiagnosticSupervisor().assess(diag(iD=_NOISE, iB=_NOISE, oD=0.01), snap())
-    assert d.state == "AMBIGUOUS" and d.action == "ESCALATE"
+    assert d.state == "NOMINAL" and d.action == "HOLD"
 
 
 def test_diagnosis_latches_after_signature_decays():

@@ -1,0 +1,32 @@
+{
+  "all_ok": true,
+  "green_margin_gain": 0.014669394859520901,
+  "cases": [
+    {
+      "case": "green",
+      "pre_event_applied": true,
+      "post_event_gated": false,
+      "post_state": "NOMINAL",
+      "ok": true
+    },
+    {
+      "case": "coupled_load",
+      "pre_event_applied": true,
+      "post_event_gated": true,
+      "post_state": "REAL_DISTURBANCE",
+      "ok": true
+    },
+    {
+      "case": "ambiguous_load",
+      "pre_event_applied": true,
+      "post_event_gated": true,
+      "post_state": "AMBIGUOUS",
+      "ok": true
+    }
+  ],
+  "weights": {
+    "w_D": 1.0,
+    "w_B": 1.0,
+    "w_S": 0.3
+  }
+}
