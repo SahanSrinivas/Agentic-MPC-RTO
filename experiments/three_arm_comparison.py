@@ -5,9 +5,10 @@
   Arm 3  LLM + MCP + guardrails     -- Claude reads the SAME diagnostics and PROPOSES one of
                                        {HOLD, VETO_HOLD, PROPOSE_SETPOINT, ESCALATE}; the deterministic
                                        DiagnosticSupervisor is the VALIDATOR / source of truth. If the
-                                       LLM disagrees, the canonical (rules) decision is applied and the
-                                       override is logged. The LLM never commands R/S (not on the menu)
-                                       and any setpoint is clipped to the envelope.
+                                       LLM disagrees on action, the canonical decision wins. On
+                                       PROPOSE_SETPOINT with action agreement, the LLM's (xD_sp, xB_sp)
+                                       drive set_target when inside the safety envelope; otherwise rules'
+                                       proposed_targets are applied (and always clipped by the envelope).
 
 The MPC is identical in all arms. The claim is NOT "LLM beats rules" -- it is "the LLM obeys the
 guardrails": with the measurement-validity principle in its prompt it should MATCH the rules, and
@@ -28,6 +29,7 @@ import warnings
 from agentic_mpc.agent.llm_config import LLM_CONFIG, make_client
 from agentic_mpc.mcp_sandbox import MPCSandbox
 from agentic_mpc.scenario2_agent import DiagnosticSupervisor
+from agentic_mpc.supervisory_apply import apply_supervisory_setpoint
 
 warnings.filterwarnings("ignore")
 OUT = pathlib.Path(__file__).parent / "outputs" / "comparison"
@@ -86,11 +88,19 @@ def _parse(text: str) -> dict:
 
 
 def reconcile(llm_action: str, canonical_action: str) -> dict:
-    """The guardrail: the deterministic canonical (rules) decision ALWAYS wins; the LLM only proposes.
-    Returns the applied action and whether the LLM was overridden."""
-    return {"final_action": canonical_action,
-            "match": llm_action == canonical_action,
-            "overridden": llm_action != canonical_action}
+    """The guardrail: rules win on action class; see supervisory_apply.resolve_setpoint_targets for SPs."""
+    from agentic_mpc.supervisory_apply import reconcile as _reconcile
+    return _reconcile(llm_action, canonical_action)
+
+
+def _apply_rules_setpoint(sb, canonical) -> dict | None:
+    if canonical.action != "PROPOSE_SETPOINT" or canonical.proposed_targets is None:
+        return None
+    return apply_supervisory_setpoint(sb, canonical.action, canonical, llm_proposal=None)
+
+
+def _apply_llm_setpoint(sb, canonical, llm_proposal, rec) -> dict | None:
+    return apply_supervisory_setpoint(sb, rec["final_action"], canonical, llm_proposal)
 
 
 def llm_propose(client, model, diag, snap, t) -> dict:
@@ -127,28 +137,41 @@ def main() -> None:
 
     rows = []
     for name in INJECT:
-        sb, diag, snap = snapshot_at_decision(name)
+        sb_mpc, diag, snap = snapshot_at_decision(name)
         canonical = DiagnosticSupervisor().assess(diag, snap)        # the VALIDATOR / source of truth
-        true_xD = float(sb.plant.last_true_output()[0])              # MPC-only: what the real state did
+        true_xD = float(sb_mpc.plant.last_true_output()[0])          # MPC-only: real state at decision
+
+        sb_rules, _, _ = snapshot_at_decision(name)
+        rules_apply = _apply_rules_setpoint(sb_rules, canonical)
+
         row = {"case": name,
                "mpc_only": {"innov_xD": diag["innovation_mean"]["xD"],
                             "offset_xD": diag["steady_state_offset"]["xD"],
                             "measured_xD": snap["y"]["xD"], "true_xD": true_xD,
                             "supervisor": "none"},
-               "rules_action": canonical.action, "rules_state": canonical.state}
+               "rules_action": canonical.action, "rules_state": canonical.state,
+               "rules_setpoint": (rules_apply["applied_targets"] if rules_apply else None),
+               "rules_target_source": (rules_apply["target_source"] if rules_apply else None)}
         if not args.no_llm:
+            sb_llm, _, _ = snapshot_at_decision(name)
             if name in cache and not args.refresh:
                 prop = cache[name]
             else:
                 prop = llm_propose(client, LLM_CONFIG.model, diag, snap, T_DECIDE)
                 cache[name] = prop
             llm_action = prop.get("action", "ERROR")
-            rec = reconcile(llm_action, canonical.action)    # validator wins regardless
+            rec = reconcile(llm_action, canonical.action)    # validator wins on action class
+            llm_apply = _apply_llm_setpoint(sb_llm, canonical, prop, rec)
             row["llm_action"] = llm_action
             row["llm_rationale"] = prop.get("rationale", "")
             row["match"] = rec["match"]
             row["final_action"] = rec["final_action"]
             row["llm_overridden"] = rec["overridden"]
+            row["llm_setpoint"] = (llm_apply["applied_targets"] if llm_apply else None)
+            row["llm_target_source"] = (llm_apply["target_source"] if llm_apply else None)
+            row["llm_proposed_sp"] = (
+                {"xD": prop.get("xD_sp"), "xB": prop.get("xB_sp")}
+                if prop.get("xD_sp") is not None and prop.get("xB_sp") is not None else None)
         rows.append(row)
     if not args.no_llm:
         cache_path.write_text(json.dumps(cache, indent=2))

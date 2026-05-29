@@ -13,7 +13,7 @@ Python ≥ 3.10 (developed on 3.12).
 
 ## 1. Tests
 ```bash
-pytest -q          # expect: 93 passed
+pytest -q          # expect: 100 passed
 ```
 
 ## 2. Scenario 2 — diagnostic supervision (the core result + thesis figure)
@@ -35,7 +35,18 @@ Writes `experiments/outputs/scenario1/`:
 - `benchmark_results.json` — green: not gated, margin gain ≈ **+0.0147**; coupled_load & ambiguous_load:
   gated after the disturbance. `all_ok: true`.
 
-## 4. MCP server (Milestone 1, MPC-only)
+## 4. Three-arm comparison (MPC-only / MCP+rules / LLM+MCP+guardrails)
+```bash
+python experiments/three_arm_comparison.py              # LLM arm: needs ANTHROPIC_API_KEY + network
+python experiments/three_arm_comparison.py --no-llm   # arms 1-2 only, deterministic, no tokens
+```
+Writes `experiments/outputs/comparison/`:
+- `comparison_table.json` — Table 1 in `docs/PAPER_DRAFT.md` §3.3.
+- `llm_responses.json` — cached Claude proposals (re-used on re-run unless `--refresh`).
+
+Expected: LLM–rules match **4/4**, overrides **0**; sensor_fault true xD **0.960 → 0.917** under MPC-only.
+
+## 5. MCP server (Milestone 1, MPC-only)
 Run the stdio server (it idle-waits for an MCP client — Ctrl-C to stop):
 ```bash
 python -m agentic_mpc.mcp_server      # or: agentic-mpc-mcp
@@ -47,7 +58,7 @@ python examples/mcp_smoke_client.py   # lists tools, resets R7, advances, reads 
 Register with a client (Claude Code / Desktop / Cursor) by pointing it at that command as a stdio
 server; `.mcp.json` is a local example (gitignored — contains a machine-specific interpreter path).
 
-## 5. Optional: re-run the upstream phase-1.5 experiments
+## 6. Optional: re-run the upstream phase-1.5 experiments
 The R2/R7 control-win and rule-based attribution tables (T6/T7) and the v2-prompt diagnosis sweep are
 in `analysis/` and `experiments/`; see `analysis/control_regret.py` and `docs/RUNPOD.md`. Those LLM
 runs require the Anthropic backend (`.env`) and cost tokens; the Scenario-1/2 artifact above does not.
