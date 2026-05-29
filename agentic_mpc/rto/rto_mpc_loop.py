@@ -61,6 +61,7 @@ class RTOMPCLoop:
         self.last_handoff: dict[str, Any] | None = None
         self.detector.reset()
         self.history: dict[str, list] = {k: [] for k in ("t", "R", "S", "xD", "xB",
+                                                          "xD_true", "xB_true",
                                                           "xD_sp", "xB_sp", "settled")}
 
     # -- public controls --------------------------------------------------------------
@@ -152,5 +153,9 @@ class RTOMPCLoop:
         self.history["t"].append(t)
         self.history["R"].append(float(u[0])); self.history["S"].append(float(u[1]))
         self.history["xD"].append(float(y[0])); self.history["xB"].append(float(y[1]))
+        # true state matching this measured y (both produced by the same prior plant.step): equals
+        # y except under a sensor fault. Used for the economic-regret metric (judges true quality).
+        yt = self.plant.last_true_output()
+        self.history["xD_true"].append(float(yt[0])); self.history["xB_true"].append(float(yt[1]))
         self.history["xD_sp"].append(float(y_sp[0])); self.history["xB_sp"].append(float(y_sp[1]))
         self.history["settled"].append(bool(self._settled_since_command))

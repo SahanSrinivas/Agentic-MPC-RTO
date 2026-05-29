@@ -16,3 +16,9 @@ venv*/
 
 # Secrets / local backend selection -- never commit the real key
 .env
+
+# Local MCP client config (contains a machine-specific interpreter path -- not portable)
+.mcp.json
+
+# Scratch batch-run logs
+experiments/outputs/*.log

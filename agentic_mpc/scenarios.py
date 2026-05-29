@@ -154,10 +154,48 @@ class R7LoadDisturbance(_Scenario):
             self._fired = True
 
 
+class S1ConflictingSignals(_Scenario):
+    """S1 -- conflicting-signal control test: a REAL coupled load (Event A) then a SENSOR fault
+    (Event B), both raising the MPC innovation comparably so a single-threshold rule cannot tell
+    them apart -- only input-output corroboration over the coupled outputs can.
+
+    Pre-registered design (FROZEN; see analysis/control_regret.py for the metric):
+      * Event A @ t=100 (REAL, persistent): feed-quality degradation that shows in BOTH coupled
+        compositions -- output_bias {xD: -0.008, xB: +0.03} (worse separation, xB-dominant so it
+        does not cancel B on xD). Correct response: trigger_rto_run (MA re-optimizes the real load).
+      * Event B @ t=160 (SENSOR, persistent): xD analyzer gross error +0.03 -> measured xD ~0.99
+        (stays INSIDE [0,1], so a physical-bounds check cannot catch it; true state unchanged).
+        Correct response: HOLD (re-optimizing on the corrupted reading drives MA off-optimal).
+    Correct action sequence: trigger on A (t=120 cycle), hold on B (t=180 cycle).
+    Metric: integrated economic regret on the TRUE state, P_opt=14.1338, dt=1 min.
+    Run with supervisor-sole-triggering (periodic RTO off): S1 is NOT comparable to T6/T7.
+    """
+
+    SCENARIO_ID, REGIME = "S1", "conflicting-signal (real load then sensor fault)"
+    MECHANISM = ("Event A @t_A: real coupled load output_bias {xD:-0.008, xB:+0.03}; "
+                 "Event B @t_B: sensor-only xD analyzer bias +0.03 (true state unchanged, stays <1)")
+    EXPECTED = ("trigger_rto_run on A (coupled real load), HOLD on B (single-analyzer fault); "
+                "naive |innovation| rule triggers on both and is corrupted by B")
+
+    def __init__(self, t_A: float = 100.0, t_B: float = 160.0,
+                 A_xD: float = -0.008, A_xB: float = 0.03, B_xD: float = 0.03) -> None:
+        self.t_A, self.t_B = t_A, t_B
+        self.A_xD, self.A_xB, self.B_xD = A_xD, A_xB, B_xD
+        self._firedA = self._firedB = False
+
+    def on_step(self, loop, t, y) -> None:
+        if not self._firedA and t >= self.t_A:
+            loop.plant.set_disturbance(output_bias={"xD": self.A_xD, "xB": self.A_xB})
+            self._firedA = True
+        if not self._firedB and t >= self.t_B:
+            loop.plant.set_sensor_bias({"xD": self.B_xD})
+            self._firedB = True
+
+
 SCENARIOS = {
     "R1": R1SlowFeedDrift, "R2": R2EfficiencyLoss, "R3": R3SteamPriceSpike,
     "R4": R4DemandShift, "R5": R5SpecTightening, "R6": R6AnalyzerGrossError,
-    "R7": R7LoadDisturbance,
+    "R7": R7LoadDisturbance, "S1": S1ConflictingSignals,
 }
 
 __all__ = ["SCENARIOS"] + [c.__name__ for c in SCENARIOS.values()]

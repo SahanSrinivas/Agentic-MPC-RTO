@@ -27,7 +27,7 @@ def _loop(rto_interval_min=30.0):
 
 
 def test_scenarios_registry_complete():
-    assert set(SCENARIOS) == {f"R{i}" for i in range(1, 8)}
+    assert set(SCENARIOS) == {f"R{i}" for i in range(1, 8)} | {"S1"}
     for sid, cls in SCENARIOS.items():
         d = cls().describe()
         assert d["scenario_id"] == sid and d["regime"] and d["mechanism"]

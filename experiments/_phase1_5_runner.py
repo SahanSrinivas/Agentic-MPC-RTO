@@ -149,7 +149,8 @@ def run_scenario(scenario_id: str, model: str = "qwen3:4b", rto_variant: str = "
     # persist the full per-timestep trajectory (log.json only keeps finals) so downstream metrics
     # -- e.g. integrated economic regret -- can be computed/audited offline without a re-run.
     h = result["history"]
-    traj = {k: h[k] for k in ("t", "R", "S", "xD", "xB", "xD_sp", "xB_sp", "settled")}
+    traj = {k: h[k] for k in ("t", "R", "S", "xD", "xB", "xD_true", "xB_true",
+                              "xD_sp", "xB_sp", "settled")}
     (out_dir / "trajectory.json").write_text(json.dumps(traj, default=_json_default))
     _print_summary(summary, out_dir)
     return summary

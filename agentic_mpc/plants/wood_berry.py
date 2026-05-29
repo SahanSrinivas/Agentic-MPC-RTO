@@ -160,6 +160,10 @@ class WoodBerryPlant(Plant):
         # Sensor-only bias (an analyzer gross error): corrupts the MEASUREMENT, not the true
         # state. Distinct from output_bias (a real load disturbance). Used by scenario R6.
         self._sensor_bias = np.zeros(self._n_out, dtype=float)
+        # Latest TRUE output (pre-sensor-bias, pre-noise): the real economic state. Exposed via
+        # last_true_output() so the loop can persist it for the economic-regret metric (a sensor
+        # fault must not corrupt the metric, which judges true product quality).
+        self._y_true_last = self.params.y_nominal.copy()
         if "gain_multiplier" in ic or "output_bias" in ic:
             self.set_disturbance(gain_multiplier=ic.get("gain_multiplier"),
                                  output_bias=ic.get("output_bias"))
@@ -203,6 +207,7 @@ class WoodBerryPlant(Plant):
         self._x = x_next
 
         y_true = self.params.y_nominal + self._x.sum(axis=1) + self._output_bias
+        self._y_true_last = y_true.copy()                  # real state (pre sensor-bias / noise)
         y_meas = self._measure(y_true)
 
         self.t += self.dt
@@ -224,6 +229,15 @@ class WoodBerryPlant(Plant):
                 "u": {n: list(self._hist_u[n]) for n in inn},
             },
         }
+
+    def last_true_output(self) -> np.ndarray:
+        """The latest TRUE output (no sensor bias, no noise) -- the real economic state.
+
+        Equals the measured output except during a sensor/analyzer gross error (R6/S1), where the
+        measurement is biased but the true product composition is not. Used to compute economic
+        regret on the real state, so an analyzer fault cannot corrupt the metric.
+        """
+        return self._y_true_last.copy()
 
     def steady_state(self, u: np.ndarray, noisy: bool = False) -> np.ndarray:
         """Analytic steady-state measured output for a constant input ``u``.
